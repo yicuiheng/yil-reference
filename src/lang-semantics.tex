@@ -1,0 +1,39 @@
+\subsection{\Yil の操作的意味}
+
+\par \Yil の操作的意味を図~\ref{fig:lang:semantics} で定義する．
+
+\begin{figure}[H]
+
+  \[
+    \text{(評価文脈)} \; E \seteq \hole \mid \App{E}{e} \mid \App{v}{E} \mid \If{E}{e_1}{e_2} \mid \Let{x}{E}{e} \\\\
+  \]
+  \begin{align*}
+    \infer[\ERuleAppOp] {
+      \Reduce{P}{\App{\mathrm{op}}{\seq{v}}}{\sem{\mathrm{op}}\paren{\seq{v}}}
+    } {
+      \arity{P}{\mathrm{op}} = |\seq{v}|
+    } & \quad\quad
+    \infer[\ERuleAppFunc] {
+      \Reduce{P}{\App{f}{\seq{v}}}{\subst{\seq{v}}{\seq{x}}{e}}
+    } {
+      \Func{f}{\seq{x}}{e} \in P
+      & |\seq{x}| = |\seq{v}|
+    } \\\\
+    \Reduce{P}{\If{\true}{e_1}{e_2}}{e_1} \quad \ERuleIfTrue & \quad\quad
+    \Reduce{P}{\If{\false}{e_1}{e_2}}{e_2} \quad \ERuleIfFalse \\\\
+    \Reduce{P}{\Let{x}{v}{e}}{\subst{v}{x}{e}} \quad \ERuleLet & \quad\quad
+    \infer[\ERuleContext] {
+      \Reduce{P}{E[e]}{E[v]}
+    } {
+      \Reduce{P}{e}{v}
+    }
+  \end{align*}
+
+  \caption{\Yil の操作的意味}
+  \label{fig:lang:semantics}
+\end{figure}
+
+\par $\Reduce{P}{e_1}{e_2}$ は プログラム $P$ における式 $e$ の1ステップの評価を表す．
+有限ステップで $e_1$ が $e_2$ に簡約されることを $\MultiReduce{P}{e_1}{e_2}$ と書く．
+\Yil の評価の例を~\ref{sec:lang:semantics:example} に示す．
+

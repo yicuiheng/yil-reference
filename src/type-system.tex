@@ -1,0 +1,60 @@
+\subsection{型付け規則}
+\label{sec:type-system}
+
+\begin{figure}[H]
+  \begin{align*}\begin{array}{c}
+    \infer[\TyRuleVar] {
+      \TyJudge{P}{\Gamma}{x}{\tau}
+    } {
+      \Gamma\paren{x} = \tau
+    } \quad\quad
+    \infer[\TyRuleFunc] {
+      \TyJudge{P}{\Gamma}{f}{\TyFunc{\seq{x}}{\seq{\tau}}{\tau}}
+    } {
+      \Func{f}{\seq{x}}{e} \in P
+      \quad \TyJudge{P}{\Gamma, \typed{\seq{x}}{\seq{\tau}}}{e}{\tau}
+    } \quad\quad
+    \TyJudge{P}{\Gamma}{n}{\TyInt{\nu}{\nu = n}} \quad \text{\TyRuleNum} \\\\
+    \infer[\TyRuleApp] {
+      \TyJudge{P}{\Gamma}{\App{e_1}{e_2}}{\tau_2}
+    } {
+      \TyJudge{P}{\Gamma}{e_1}{\TyFunc{x}{\tau_1}{\tau_2}}
+      \quad \TyJudge{P}{\Gamma}{e_2}{\tau_1}
+    } \quad\quad
+    \infer[\TyRuleIf] {
+      \TyJudge{P}{\Gamma}{\If{e_1}{e_2}{e_3}}{\tau}
+    } {
+      \TyJudge{P}{\Gamma}{e_1}{\TyInt{\nu}{\phi}}
+      \quad \TyJudge{P}{\Gamma, \FormulaAnd{\phi}{\TermEq{\nu}{0}}}{e_2}{\tau}
+      \quad \TyJudge{P}{\Gamma, \FormulaAnd{\phi}{\TermEq{\nu}{1}}}{e_2}{\tau}
+    } \\\\
+    \infer[\TyRuleLet] {
+      \TyJudge{P}{\Gamma}{\Let{x}{e_1}{e_2}}{\tau_2}
+    } {
+      \TyJudge{P}{\Gamma}{e_1}{\tau_1}
+      \quad \TyJudge{P}{\Gamma, \typed{x}{\tau_1}}{e_2}{\tau_2}
+      \quad x \notin \fv{\tau_2}
+    } \quad\quad
+    \infer[\TyRuleSub] {
+      \TyJudge{P}{\Gamma}{e}{\tau}
+    } {
+      \TyJudge{P}{\Gamma}{e}{\tau'}
+      \quad \SubTyJudge{P}{\Gamma}{\tau'}{\tau}
+    } \\\\
+    \infer[\SubTyRuleInt] {
+      \SubTyJudge{P}{\Gamma}{\TyInt{\nu}{\phi_1}}{\TyInt{\nu}{\phi_2}}
+    } {
+      \models \FormulaAnd{\sem{\Gamma}}{\phi_1} \Rightarrow \phi_2
+    } \quad\quad
+    \infer[\SubTyRuleFunc] {
+      \SubTyJudge{P}{\Gamma}{\TyFunc{\nu}{\tau_{11}}{\tau_{12}}}{\TyFunc{\nu}{\tau_{21}}{\tau_{22}}}
+    } {
+      \SubTyJudge{P}{\Gamma}{\tau_{21}}{\tau_{11}}
+      \quad \SubTyJudge{P}{\Gamma, \typed{\nu}{\tau_{21}}}{\tau_{12}}{\tau_{22}}
+    }
+  \end{array}\end{align*}
+  \caption{\Yil の型付け規則}
+  \label{fig:typing-rules}
+\end{figure}
+
+\par 型付けの例を \ref{sec:typing:example} に示す．

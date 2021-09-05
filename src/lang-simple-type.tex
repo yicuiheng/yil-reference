@@ -1,0 +1,63 @@
+
+\subsection{\Yil の単純型}
+
+\par \Yil は篩型の型システムを持つ言語であるが，その前に単純型を図~\ref{fig:lang:simple-type:syntax} で定義する．
+
+$\StyInt$ は整数を表す単純型である． $\StyFunc{T_1}{T_2}$ は単純型 $T_1$ が付く値を受け取って単純型 $T_2$ が付く式を返す関数である．
+
+\begin{figure}[h]
+  \begin{align*}
+    \text{(単純型)} \; T \seteq \StyInt \mid \StyFunc{T}{T} \\
+    \text{(単純型環境)} \; \Delta \seteq \emptyset \mid \Delta, x\colon T
+  \end{align*}
+  \caption{単純型の構文}
+  \label{fig:lang:simple-type:syntax}
+\end{figure}
+
+\par 単純型判断式 $\StyJudge{P}{\Delta}{e}{T}$ が 図~\ref{fig:lang:simple-type:rules} で定義される単純型付け規則によって導出可能なとき，単純型環境 $\Delta$ のもとで式 $e$ には単純型 $T$ がつくという．
+
+\par $\StyFunc{T_1}{\paren{\StyFunc{T_2}{\paren{\StyFunc{T_3}{\dots \paren{\StyFunc{T_n}{T}}}}}}}$ を $\StyFunc{\seq{T}}{T}$ と略記する．
+$\Func{f}{\seq{x}}{e} \in P$ について $|\seq{x}| = |\seq{T}|$ かつ $\StyJudge{P}{\typed{\seq{x}}{\seq{T}}}{e}{T}$ を満たす単純型の列 $\seq{T}$ と単純型 $T$ が存在するとき，
+関数 $\Func{f}{\seq{x}}{e}$ に単純型 $\StyFunc{\seq{T}}{T}$ がつくといい，$\sty{f} = \StyFunc{\seq{T}}{T}$ と書く．
+また，組み込み関数の変数 $f \in \mathrm{op}$ の単純型も $\sty{f}$ で得られるとする．
+\par 以降は単純型がつく式および関数のみを考えることとする．
+
+\begin{figure}[h]
+  \begin{align*}\begin{array}{c}
+    \infer[\STRuleVar] {
+      \StyJudge{P}{\Delta}{x}{T}
+    } {
+      \Delta\paren{x} = T
+    }
+    \quad\quad \infer[\STRuleVarFunc] {
+      \StyJudge{P}{\Delta}{f}{\sty{f}}
+    } {
+      \Func{f}{\seq{x}}{e} \in P
+    }
+    \quad\quad \StyJudge{P}{\Delta}{n}{\StyInt} \quad\STRuleNum
+    \quad\quad \StyJudge{P}{\Delta}{\mathrm{op}}{\sty{op}} \quad\STRuleOp \\\\
+    \infer[\STRuleApp] {
+      \StyJudge{P}{\Delta}{\App{e_1}{e_2}}{T_2}
+    } {
+      \StyJudge{P}{\Delta}{e_1}{\StyFunc{T_1}{T_2}}
+      \quad \StyJudge{P}{\Delta}{e_2}{T_1}
+    }
+    \quad\quad \infer[\STRuleIf] {
+      \StyJudge{P}{\Delta}{\If{e_1}{e_2}{e_3}}{T}
+    } {
+      \StyJudge{P}{\Delta}{e_1}{\StyInt}
+      \quad \StyJudge{P}{\Delta}{e_2}{T}
+      \quad \StyJudge{P}{\Delta}{e_3}{T}
+    } \\\\
+    \infer[\STRuleLet] {
+      \StyJudge{P}{\Delta}{\Let{x}{e_1}{e_2}}{T_2}
+    } {
+      \StyJudge{P}{\Delta}{e_1}{T_1}
+      \quad \StyJudge{P}{\Delta, \typed{x}{T_1}}{e_2}{T_2}
+    }
+  \end{array}\end{align*}
+  \label{fig:lang:simple-type:rules}
+  \caption{単純型付け規則}
+\end{figure}
+
+\par \Yil の単純型付けの例を~\ref{sec:lang:simple-typing:example} に示す．

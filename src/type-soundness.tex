@@ -1,0 +1,26 @@
+\subsection{型の健全性}
+\label{sec:type:soundness}
+
+\begin{theorem}{進捗定理}{progress}
+  $\TyJudge{P}{\Gamma}{e_1}{\tau}$ のとき，
+  式 $e_1$ は値であるか，もしくは $\Reduce{P}{e_1}{e_2}$ なる $e_2$ が存在する．
+\end{theorem}
+\begin{proof}
+  \TODO{証明を書く}
+\end{proof}
+
+\begin{lemma}{代入補題}{subst}
+  $\TyJudge{P}{\Gamma_1}{v}{\tau'}$ かつ
+  $\TyJudge{P}{\Gamma_1, \typed{x}{\tau'}, \Gamma_2}{e}{\tau}$ ならば
+  $\TyJudge{P}{\Gamma_1, \subst{x}{v}{\Gamma_2}}{\subst{x}{v}{e}}{\subst{x}{v}{\tau}}$
+\end{lemma}
+\begin{proof}
+  \TODO{証明を書く}
+\end{proof}
+
+\begin{theorem}{保存定理}{preservation}
+  \TODO{書く}
+\end{theorem}
+\begin{proof}
+  \TODO{証明を書く}
+\end{proof}

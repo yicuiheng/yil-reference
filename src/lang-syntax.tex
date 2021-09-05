@@ -1,0 +1,28 @@
+\subsection{\Yil の構文の形式的定義}
+
+\par \Yil のコア言語は 図~\ref{fig:lang:syntax} で定義される．
+\begin{figure}[h]
+  \begin{align*}
+    \text{(プログラム)} \; P & \seteq \Func{f}{\seq{x}}{e} \mid P, \; \Func{f}{\seq{x}}{e}                                         \\
+    \text{(式)} \; e         & \seteq x \mid n \mid \mathrm{op} \mid \App{e_1}{e_2} \mid \If{e_1}{e_2}{e_3} \mid \Let{x}{e_1}{e_2} \\
+    \text{(値)} \; v         & \seteq n \mid \App{f}{\seq{v}} \where{|\seq{v}| < \arity{P}{f}}
+  \end{align*}
+  \caption{Yilコア言語の構文}
+  \label{fig:lang:syntax}
+\end{figure}
+
+\par プログラム $P$ は，関数名が $f$，引数が $\seq{x}$, 本体が$e$ の再帰関数 $\Func{f}{\seq{x}}{e}$ の列である．
+$x$, $y$ は式 $e$ の上のメタ変数であり，$f$ は関数変数の上のメタ変数である．
+$\mathrm{op}$ は組み込み関数の変数の集合である．これには整数上の和 $+$, 差 $-$, 積 $\times$, 比較 $<$ が含まれる.
+組み込み関数の関数適用は慣習に合わせた表記をする場合がある．つまり $x = y$ は $\App{\App{=}{x}}{y}$ と同等である． 
+$\App{e_1}{e_2}$ は関数適用であり，$\If{e_1}{e_2}{e_3}$ は条件分岐を表す．$\If{e_1}{e_2}{e_3}$ は $e_1$ が $0$ の時に $e_2$ を評価し，$1$ の時に $e_3$ を評価する．
+読みやすさのために $0$ を $\true$，$1$ を $\false$ と書くことがある．
+組み込み関数変数 $\mathrm{not} \in \mathrm{op}$ は $\true$ を $\false$ に，$\false$ を $\true$ に写す関数である．
+$\arity{P}{\cdot}$ はプログラム $P$ における関数の引数の数を表す． つまり $\Func{f}{\seq{x}}{e} \in P$ の時，
+$\arity{P}{f} = |\seq{x}|$ であり $\arity{P}{+} = 2$ である．
+
+
+\NOTE{
+  将来的にタプルや代数的データ構造およびパターンマッチも導入予定だが，今のところは単純のため非関数の式は整数しかないような言語を考える．
+  そのような高度なデータ構造は ~\cite{DBLP:conf/popl/OngR11} や ~\cite{DBLP:conf/ppdp/UnnoK09} にあるような拡張によって無理なく扱えるようになると考えている．
+}

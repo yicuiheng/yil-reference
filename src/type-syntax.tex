@@ -1,0 +1,26 @@
+\subsection{型の構文}
+\label{sec:type:syntax}
+
+\par \Yil の型システムを図 ~\ref{fig:type:syntax} に示す．
+
+\begin{figure}[h]
+  \begin{align*}
+    \text{(篩型)} \; \tau  &\seteq \TyInt{x}{\phi} \mid \TyFunc{x}{\tau_1}{\tau_2} \\
+    \text{(型環境)} \; \Gamma &\seteq \emptyset \mid \Gamma, \typed{x}{\tau} \\
+    \text{(論理式)} \; \phi &\seteq \FormulaLeq{t_1}{t_2} \mid \FormulaTop \mid \FormulaBot \mid \FormulaNot{\phi} \mid \FormulaAnd{\phi_1}{\phi_2} \mid \FormulaOr{\phi_1}{\phi_2} \\
+    \text{(項)} \; t &\seteq n \mid x \mid \TermAdd{t_1}{t_2} \mid \TermMult{n}{t}
+  \end{align*}
+  \label{fig:type:syntax}
+  \caption{型の構文}
+\end{figure}
+
+\par $\TyInt{x}{\phi}$ は 論理式 $\phi$ を満足させるような整数 $x$ に付くような型である．例えば $\TyInt{x}{x \geq 10}$ は $10$ 以上の整数につく型の整数につく型である．
+$\TyInt{x}{\FormulaTop}$ , つまり任意の整数に付く型を単に $\StyInt$ と書くことにする．
+また，$\TyFunc{x}{\tau_1}{\tau_2}$ は 型 $\tau_1$ がつく値 $x$ を受け取って型 $\tau_2$ がつく式を返す関数につく型である．
+$\TyFunc{x_1}{\tau_1}{\paren{\TyFunc{x_2}{\tau_2}{\dots \paren{\TyFunc{x_n}{\tau_n}{\tau}}}}}$ を $\TyFunc{\seq{x}}{\seq{\tau}}{\tau}$ と略記する．
+\par 型環境 $\Gamma$ は変数束縛 $\typed{x}{\tau}$ の列である．これを変数かた型への関数とみなして，変数 $x$ に束縛されている型を $\Gamma\paren{x}$ と書くことがある．
+$\nu$ をこれまでに使われていない fresh な変数名として型環境 $\Gamma, \typed{\nu}{\phi}$ を $\Gamma, \phi$ と略記する．ここで 型 $\typed{\nu}{\phi}$ は変数を束縛しておらず 条件 $\phi$ を導入しているだけであるということに注意してほしい．
+型環境 $\Gamma, \typed{x_1}{\tau_1}, \typed{x_2}{\tau_2}, \dots, \typed{x_n}{\tau_n}, \Gamma'$ を $\Gamma, \typed{\seq{x}}{\seq{\tau}}, \Gamma'$ と略記する．
+\par 論理式 $\phi$ は量化子のない線形整数算術 (QF-LIA) である．この論理式は z3 \cite{z3} や CVC4 \cite{cvc4} などの SMTソルバによって妥当性を判定できる．
+$\phi_1 \Rightarrow \phi_2$ などは一般的な慣習に沿って派生形式として定義される．
+つまり $\phi_1 \Rightarrow \phi_2$, $t_1 < t_2$, $t_1 = t_2$ をそれぞれ $\FormulaOr{\FormulaNot{\phi_1}}{\phi_2}$, $\FormulaLeq{t_1 + 1}{t_2}$, $\FormulaAnd{\FormulaLeq{t_1}{t_2}}{\FormulaLeq{t_2}{t_1}}$ と定義する．

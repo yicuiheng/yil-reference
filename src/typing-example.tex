@@ -1,0 +1,28 @@
+\section{型付けの例}
+\label{sec:typing:example}
+
+\begin{align*}
+  & P \; \defeq \; \\
+  &\quad\quad \Func{\code{is\_even}}{x}{\If{x = 0}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{x - 1}}}}}}, \\
+  &\quad\quad \Func{\code{is\_odd}}{x}{\If{x = 0}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{x - 1}}}}}} \\\\
+  & \infer[\TyRuleApp] {
+    \TyJudge{P}{}{\App{\code{is\_even}}{2}}{\TyInt{\nu}{\nu = 0}}
+  } {
+    \infer[\TyRuleFunc] {
+      \TyJudge
+        {P}{\Gamma}
+        {\code{is\_even}}
+        {\TyFunc
+          {x}{\TyInt{\nu}{\nu \geq 0}}
+          {\TyInt{\nu'}{\begin{array}{l}
+            \paren{\paren{\nu \% 2 = 0} \Rightarrow \nu' = 0} \lor \\
+            \paren{\paren{\nu \% 2 \neq 0} \Rightarrow \nu' = 1}
+          \end{array}}}
+        }
+    }{
+      \TODO{書く}
+    }
+    & \TyJudge{P}{\Gamma}{2}{\TyInt{\nu}{\nu = 2}} \quad \TyRuleNum
+  }
+\end{align*}
+

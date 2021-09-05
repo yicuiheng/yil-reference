@@ -1,0 +1,133 @@
+%
+% This code is licensed under CC0.
+% http://creativecommons.org/publicdomain/zero/1.0/deed
+%
+
+\usepackage[backend=biber,sorting=none]{biblatex}
+\addbibresource{main.bib}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{stmaryrd}
+\usepackage{mathtools}
+
+\usepackage{xcolor}
+\usepackage{diffcoeff}
+\usepackage{booktabs}
+\usepackage{mleftright}
+\usepackage[cache=false,outputdir=build]{minted}
+\usepackage{dirtree}
+\usepackage{proof}
+\usepackage{here}
+\usepackage{url}
+
+\usepackage{fontawesome}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{breakable,theorems,skins,listings,minted}
+
+\usepackage{silence}
+\WarningFilter{latexfont}{Some font shapes were not available, defaults substituted.}
+\WarningFilter{latexfont}{Font shape `TU/UDDigiKyokashoNK-R(1)}
+
+\usepackage{fontspec}
+\usepackage{unicode-math}
+
+\usepackage{luatexja-fontspec}
+\newjfontface{\nonproportional}{UD Digi Kyokasho N-R}[YokoFeatures={JFM=ujis}]
+\setmainjfont[CharacterWidth=Proportional,%
+  ItalicFont={UD Digi Kyokasho NK-R},%
+  ItalicFeatures={FakeSlant=0.27},%
+  SlantedFont={UD Digi Kyokasho NK-R},%
+  SlantedFeatures={FakeSlant=0.18},%
+  BoldFont={UD Digi Kyokasho NK-B},%
+  BoldSlantedFont={UD Digi Kyokasho NK-B},%
+  BoldSlantedFeatures={FakeSlant=0.18},%
+  BoldItalicFont={UD Digi Kyokasho NK-B},%
+  BoldItalicFeatures={FakeSlant=0.27},%
+  YokoFeatures={JFM=prop}]{UD Digi Kyokasho NK-R}
+
+\setmainfont{STIX Two Text}
+\setmonofont{Inconsolata}
+\setmathfont{STIX Two Math}
+
+\usepackage{bm}
+
+\definecolor{linenocol}{RGB}{100,100,100}
+
+\renewcommand{\theFancyVerbLine}{\color{linenocol}\arabic{FancyVerbLine}}
+\newtcblisting{program}[3][]{%
+  listing engine=minted,
+  minted language=#2,
+  listing only,
+  breakable,
+  enhanced,
+  boxrule=0pt,bottomrule=2pt,toprule=2pt,
+  sharp corners,
+  drop fuzzy shadow,
+  title=\hspace*{-1em}\faCode \quad #3,
+  minted options = {
+      #1,
+      breaklines=true,
+      breakbefore=.,
+      numbersep=2mm
+    },
+  overlay={%
+      \begin{tcbclipinterior}
+        \fill[gray!25] (frame.south west) rectangle ([xshift=4mm]frame.north west);
+      \end{tcbclipinterior}
+    }
+}
+
+\definecolor{thmcol}{RGB}{232,56,57} % red
+\definecolor{lemcol}{RGB}{2,77,98} % green
+\definecolor{defcol}{RGB}{20,13,74} % blue
+
+\tcbset{theoremtemplate/.style={%
+      enhanced,
+      boxrule=0pt,bottomrule=2pt,toprule=2pt,
+      sharp corners,
+      drop fuzzy shadow,
+      breakable
+    }}
+
+\newtcbtheorem[number within=section]{theorem}{定理}{theoremtemplate,colframe=thmcol}{thm}
+\newcommand{\thmref}[1]{定理~\ref{thm:#1}}
+\newtcbtheorem[use counter from=theorem]{proposition}{命題}{theoremtemplate,colframe=thmcol}{prop}
+\newcommand{\propref}[1]{命題~\ref{prop:#1}}
+\newtcbtheorem[use counter from=theorem]{corollary}{系}{theoremtemplate,colframe=thmcol}{cor}
+\newcommand{\corref}[1]{系~\ref{cor:#1}}
+
+\newtcbtheorem[use counter from=theorem]{definition}{定義}{theoremtemplate,colframe=defcol}{def}
+\newcommand{\defref}[1]{定義~\ref{def:#1}}
+
+\newtcbtheorem[use counter from=theorem]{lemma}{補題}{theoremtemplate,colframe=lemcol}{lem}
+\newcommand{\lemref}[1]{補題~\ref{lem:#1}}
+
+\newenvironment{proof}
+  {\begin{tcolorbox}[enhanced,
+    breakable,
+    sharp corners,
+    boxrule=-1pt,
+    leftrule=4pt]
+  \par \hspace{-1em}\textbf{\fontsize{1.1em}{0cm} 証明} \ }
+  {\\
+    \vspace*{-6pt}\hspace*{\fill} (証明終)
+    \end{tcolorbox}}
+
+\newcommand{\TODO}[1]{\textcolor{red}{TODO: #1}}
+\newcommand{\NOTE}[1]{\textcolor{blue}{NOTE: #1}}
+
+\renewcommand{\brace}[1]{\mleft\{#1\mright\}}
+\newcommand{\paren}[1]{(#1)}
+\newcommand{\seq}[1]{\overline{#1}}
+
+\newcommand{\seteq}{\Coloneqq}
+\newcommand{\defeq}{\lower0.5ex\hbox{$\overset{\text{def}}{\scriptstyle =}$}}
+\newcommand{\code}[1]{\text{\ttfamily\fontseries{m}\texttt{#1}}}
+
+\newcommand{\where}[1]{\quad\quad\quad \paren{\text{ただし} \; #1}}
+
+\newcommand{\typed}[2]{#1\colon #2}
+
+\allowdisplaybreaks[2]
+
+

@@ -1,0 +1,14 @@
+source = "main.tex"
+latex = "lualatex"
+bibtex = "biber"
+
+sequence = ["latex", "bibtex", "latex", "latex"]
+
+[programs.latex]
+command = "lualatex"
+opts  = ["-synctex=1", "-file-line-error", "-halt-on-error", "-interaction=nonstopmode", "-output-directory=build", "-shell-escape"]
+args = ["%T"]
+
+[programs.bibtex]
+command = "biber"
+args = ["build/%B"]

@@ -1,0 +1,29 @@
+{
+    "[latex]": {
+        "editor.suggest.snippetsPreventQuickSuggestions": false,
+        "editor.tabSize": 2
+    },
+    "latex-workshop.latex.recipes": [
+        {
+            "name": "llmk",
+            "tools": [
+                "llmk"
+            ]
+        },
+    ],
+    "latex-workshop.latex.tools": [
+        {
+            "name": "llmk",
+            "command": "llmk",
+            "args": [],
+            "env": {}
+        },
+    ],
+    "latex-workshop.view.pdf.viewer": "tab",
+    "latex-workshop.view.pdf.zoom": "page-width",
+    "latex-workshop.intellisense.package.enabled": true,
+    "latex-workshop.latex.outDir": "build",
+    "latex-workshop.latex.autoBuild.run": "onSave",
+    "latex-workshop.latex.autoClean.run": "onFailed",
+    "editor.formatOnSave": true
+}

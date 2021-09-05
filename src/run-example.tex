@@ -1,0 +1,234 @@
+
+\section{\Yil の式の評価例}
+\label{sec:lang:semantics:example}
+
+\par 以下は \Yil で与えられた引数が偶数か奇数かを判定するプログラムの評価の例です．
+
+\begin{align*}
+  & P \; \defeq \; \\
+  &\quad\quad \Func{\code{is\_even}}{x}{\If{x = 0}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{x - 1}}}}}}, \\
+  &\quad\quad \Func{\code{is\_odd}}{x}{\If{x = 0}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{x - 1}}}}}} \\\\
+  & \Reduce{P}
+      {\App{\code{is\_even}}{2}}
+      {\Reduce{P}
+        {\If{2 = 0}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}}}
+      {\Reduce{P}
+        {\If{\false}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}} \\}
+      {&\Reduce{P}
+        {\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}}
+      {\Reduce{P}
+        {\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{1}}}}
+      {\Reduce{P}
+        {\App{\mathrm{not}}{\paren{\If{1 = 0}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}} \\}
+      {&\Reduce{P}
+        {\App{\mathrm{not}}{\paren{\If{\false}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}}}
+      {\Reduce{P}
+        {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}}
+      {\Reduce{P}
+        {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{0}}}}} \\}
+      {&\Reduce{P}
+        {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren{\If{0 = 0}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{0-1}}}}}}}}}}
+      {\Reduce{P}
+        {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren{\If{\true}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{0-1}}}}}}}}} \\}
+      {&\Reduce{P}
+        {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\true}}}}
+      {\Reduce{P}{\App{\mathrm{not}}{\false}}{\true}}
+      }}}}}}}}}}} \\
+  & \text{つまり} \quad \MultiReduce{P}{\App{\code{is\_even}}{2}}{\true} \\\\
+  & \infer[\ERuleAppFunc] {
+    \Reduce{P}
+        {\App{\code{is\_even}}{2}}
+        {\If{2 = 0}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}}}
+  } {
+    \Func{\code{is\_even}}{x}{
+      \If{2 = 0}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{x-1}}}}}
+    } \in P
+  } \\\\
+  & \infer[\ERuleContext] {
+    \Reduce{P}
+        {\If{2 = 0}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}}}
+        {\If{\false}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}}}
+  } {
+    \infer[\ERuleAppOp]
+        {\Reduce{P}{2 = 0}{\false}}
+        {\sem{=}\paren{2, 0} = \false}
+  } \\\\
+  & \Reduce{P}
+        {\If{\false}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}}}
+        {\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}} \quad\ERuleIfFalse \\\\
+  & \infer[\ERuleContext] {
+    \Reduce{P}
+        {\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}}
+        {\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{1}}}}
+  } {
+    \infer[\ERuleContext] {
+      \Reduce{P}
+        {\App{\code{is\_odd}}{\paren{2-1}}}
+        {\App{\code{is\_odd}}{1}}
+    } {
+      \infer[\ERuleAppOp] {
+        \Reduce{P}{2-1}{1}
+      } {
+        \sem{-}\paren{2, 1} = 1
+      }
+    }
+  } \\\\
+  & \infer[\ERuleContext] {
+    \Reduce{P}
+        {\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{1}}}}
+        {\App{\mathrm{not}}{\paren{\If{1 = 0}{\false}{\App{\mathrm{not}}{\paren{\App{\mathrm{is\_even}}{\paren{1-1}}}}}}}}
+  } {
+    \infer[\ERuleAppFunc] {
+      \Reduce{P}
+          {\App{\code{is\_odd}}{1}}
+          {\If
+            {1 = 0}
+            {\false}
+            {\App
+              {\mathrm{not}}
+              {\paren{\App
+                {\code{is\_even}}
+                {\paren{1-1}}}}}}
+    } {
+      \Func{\code{is\_odd}}{x}{\If{x=0}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{x-1}}}}}} \in P
+    }
+  } \\\\
+  & \hspace{-4em} \infer[\ERuleContext] {
+    \Reduce{P}
+      {\App{\mathrm{not}}{\paren{\If{1 = 0}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}}}
+      {\App{\mathrm{not}}{\paren{\If{\false}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}}}
+  } {
+    \infer[\ERuleContext] {
+      \Reduce{P}
+        {\If{1 = 0}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}
+        {\If{\false}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}
+    } {
+      \infer[\ERuleAppOp] {
+        \Reduce{P}{1 = 0}{\false}
+      } {
+        \sem{=}\paren{1, 0} = \false
+      }
+    }
+  } \\\\
+  & \infer[\ERuleContext] {
+    \Reduce{P}
+      {\App{\mathrm{not}}{\paren{\If{\false}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}}}
+      {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}}
+  } {
+    \Reduce{P}
+      {\If{\false}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}
+      {\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}
+      \quad \ERuleIfFalse
+  } \\\\
+  & \infer[\ERuleContext] {
+    \Reduce{P}
+      {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}}
+      {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{0}}}}}}
+  } {
+    \infer[\ERuleContext] {
+      \Reduce{P}
+        {\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}
+        {\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{0}}}}
+    } {
+      \infer[\ERuleContext] {
+        \Reduce{P}
+          {\App{\code{is\_even}}{\paren{1-1}}}
+          {\App{\code{is\_even}}{0}}
+      } {
+        \infer[\ERuleAppOp] {
+          \Reduce{P}{1-1}{0}
+        } {
+          \sem{-}\paren{1, 1} = 0
+        }
+      }
+    }
+  }  \\\\
+  & \infer[\ERuleContext] {
+    \Reduce{P}
+      {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{0}}}}}}
+      {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren
+        {\If{0 = 0}{\true}{\dots}}
+      }}}}
+  } {
+    \infer[\ERuleContext] {
+      \Reduce{P}
+        {\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{0}}}}
+        {\App{\mathrm{not}}{\paren
+          {\If{0 = 0}{\true}{\dots}}
+        }}
+    } {
+      \infer[\ERuleAppFunc] {
+        \Reduce{P}
+          {\App{\code{is\_even}}{0}}
+          {\If{0 = 0}{\true}{\dots}}
+      } {
+        \Func{\code{is\_even}}{x}{\If{x = 0}{\true}{\dots}} \in P
+      }
+    }
+  } \\\\
+  & \infer[\ERuleContext] {
+    \Reduce{P}
+        {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren
+          {\If{0 = 0}{\true}{\dots}}
+        }}}}
+        {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren
+          {\If{\true}{\true}{\dots}}
+        }}}}
+  } {
+    \infer[\ERuleContext] {
+      \Reduce{P}
+        {\App{\mathrm{not}}{\paren{\If{0 = 0}{\true}{\dots}}}}
+        {\App{\mathrm{not}}{\paren{\If{\true}{\true}{\dots}}}}
+    } {
+      \infer[\ERuleContext] {
+        \Reduce{P}
+          {\If{0 = 0}{\true}{\dots}}
+          {\If{\true}{\true}{\dots}}
+      } {
+        \infer[\ERuleAppOp] {
+          \Reduce{P}{0 = 0}{\true}
+        } {
+          \sem{=}\paren{0, 0} = \true
+        }
+      }
+    }
+  } \\\\
+  & \infer[\ERuleContext] {
+    \Reduce{P}
+      {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren
+          {\If{\true}{\true}{\dots}}
+      }}}}
+      {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\true}}}}
+  } {
+    \infer[\ERuleContext] {
+      \Reduce{P}
+        {\App{\mathrm{not}}{\paren{\If{\true}{\true}{\dots}}}}
+        {\App{\mathrm{not}}{\true}}
+    } {
+      \Reduce{P}
+        {\If{\true}{\true}{\dots}}
+        {\true} \quad \ERuleIfTrue
+    }
+  } \\\\
+  & \infer[\ERuleContext] {
+    \Reduce{P}
+      {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\true}}}}
+      {\App{\mathrm{not}}{\false}}
+  } {
+    \infer[\ERuleAppOp] {
+      \Reduce{P}
+        {\App{\mathrm{not}}{\true}}
+        {\false}
+    } {
+      \sem{\mathrm{not}}\paren{\true} = \false
+    }
+  } \\\\
+  & \infer[\ERuleAppOp] {
+    \Reduce{P}{\App{\mathrm{not}}{\false}}{\true}
+  } {
+    \sem{\mathrm{not}}\paren{\false} = \true
+  }
+\end{align*}
+
+
+
