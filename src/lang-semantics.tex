@@ -3,10 +3,6 @@
 \par \Yil の操作的意味を図~\ref{fig:lang:semantics} で定義する．
 
 \begin{figure}[H]
-
-  \[
-    \text{(評価文脈)} \; E \seteq \hole \mid \App{E}{e} \mid \App{v}{E} \mid \If{E}{e_1}{e_2} \mid \Let{x}{E}{e} \\\\
-  \]
   \begin{align*}
     \infer[\ERuleAppOp] {
       \Reduce{P}{\App{\mathrm{op}}{\seq{v}}}{\sem{\mathrm{op}}\paren{\seq{v}}}
@@ -21,12 +17,12 @@
     } \\\\
     \Reduce{P}{\If{\true}{e_1}{e_2}}{e_1} \quad \ERuleIfTrue & \quad\quad
     \Reduce{P}{\If{\false}{e_1}{e_2}}{e_2} \quad \ERuleIfFalse \\\\
-    \Reduce{P}{\Let{x}{v}{e}}{\subst{v}{x}{e}} \quad \ERuleLet & \quad\quad
-    \infer[\ERuleContext] {
-      \Reduce{P}{E[e]}{E[v]}
+    \infer[\ERuleLetCtx] {
+      \Reduce{P}{\Let{x}{e_1}{e_2}}{\Let{x}{e'_1}{e_2}}
     } {
-      \Reduce{P}{e}{v}
-    }
+      \Reduce{P}{e_1}{e'_1}
+    } & \quad\quad
+    \Reduce{P}{\Let{x}{v}{e}}{\subst{v}{x}{e}} \quad \ERuleLetSubst
   \end{align*}
 
   \caption{\Yil の操作的意味}
