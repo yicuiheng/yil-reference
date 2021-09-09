@@ -16,20 +16,20 @@
     } \quad\quad
     \TyJudge{P}{\Gamma}{n}{\TyInt{\nu}{\nu = n}} \quad \text{\TyRuleNum} \\\\
     \infer[\TyRuleApp] {
-      \TyJudge{P}{\Gamma}{\App{e_1}{e_2}}{\tau_2}
+      \TyJudge{P}{\Gamma}{\App{v_1}{v_2}}{\tau_2}
     } {
-      \TyJudge{P}{\Gamma}{e_1}{\TyFunc{x}{\tau_1}{\tau_2}}
-      \quad \TyJudge{P}{\Gamma}{e_2}{\tau_1}
+      \TyJudge{P}{\Gamma}{v_1}{\TyFunc{x}{\tau_1}{\tau_2}}
+      \quad \TyJudge{P}{\Gamma}{v_2}{\tau_1}
     } \quad\quad
     \infer[\TyRuleIf] {
-      \TyJudge{P}{\Gamma}{\If{e_1}{e_2}{e_3}}{\tau}
+      \TyJudge{P}{\Gamma}{\If{\; v \;}{\; e_1 \;}{\; e_2 \;}}{\tau}
     } {
-      \TyJudge{P}{\Gamma}{e_1}{\TyInt{\nu}{\phi}}
-      \quad \TyJudge{P}{\Gamma, \FormulaAnd{\phi}{\TermEq{\nu}{0}}}{e_2}{\tau}
+      \TyJudge{P}{\Gamma}{v}{\TyInt{\nu}{\phi}}
+      \quad \TyJudge{P}{\Gamma, \FormulaAnd{\phi}{\TermEq{\nu}{0}}}{e_1}{\tau}
       \quad \TyJudge{P}{\Gamma, \FormulaAnd{\phi}{\TermEq{\nu}{1}}}{e_2}{\tau}
     } \\\\
     \infer[\TyRuleLet] {
-      \TyJudge{P}{\Gamma}{\Let{x}{e_1}{e_2}}{\tau_2}
+      \TyJudge{P}{\Gamma}{\Let{\; x \;}{\; e_1 \;}{\; e_2 \;}}{\tau_2}
     } {
       \TyJudge{P}{\Gamma}{e_1}{\tau_1}
       \quad \TyJudge{P}{\Gamma, \typed{x}{\tau_1}}{e_2}{\tau_2}

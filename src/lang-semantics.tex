@@ -15,14 +15,14 @@
       \Func{f}{\seq{x}}{e} \in P
       & |\seq{x}| = |\seq{v}|
     } \\\\
-    \Reduce{P}{\If{\true}{e_1}{e_2}}{e_1} \quad \ERuleIfTrue & \quad\quad
-    \Reduce{P}{\If{\false}{e_1}{e_2}}{e_2} \quad \ERuleIfFalse \\\\
+    \Reduce{P}{\If{\; \true \;}{\; e_1 \;}{\; e_2 \;}}{\; e_1 \;} \quad \ERuleIfTrue & \quad\quad
+    \Reduce{P}{\If{\; \false \;}{\; e_1 \;}{\; e_2 \;}}{\; e_2 \;} \quad \ERuleIfFalse \\\\
     \infer[\ERuleLetCtx] {
-      \Reduce{P}{\Let{x}{e_1}{e_2}}{\Let{x}{e'_1}{e_2}}
+      \Reduce{P}{\Let{\; x \;}{\; e_1 \;}{\; e_2 \;}}{\Let{\; x \;}{\; e'_1 \;}{\; e_2 \;}}
     } {
       \Reduce{P}{e_1}{e'_1}
     } & \quad\quad
-    \Reduce{P}{\Let{x}{v}{e}}{\subst{v}{x}{e}} \quad \ERuleLetSubst
+    \Reduce{P}{\Let{\; x \;}{\; v \;}{\; e \;}}{\subst{v}{x}{e}} \quad \ERuleLetSubst
   \end{align*}
 
   \caption{\Yil の操作的意味}

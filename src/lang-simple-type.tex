@@ -37,20 +37,20 @@ $\Func{f}{\seq{x}}{e} \in P$ について $|\seq{x}| = |\seq{T}|$ かつ $\StyJu
     \quad\quad \StyJudge{P}{\Delta}{n}{\StyInt} \quad\STRuleNum
     \quad\quad \StyJudge{P}{\Delta}{\mathrm{op}}{\sty{op}} \quad\STRuleOp \\\\
     \infer[\STRuleApp] {
-      \StyJudge{P}{\Delta}{\App{e_1}{e_2}}{T_2}
+      \StyJudge{P}{\Delta}{\App{v_1}{v_2}}{T_2}
     } {
-      \StyJudge{P}{\Delta}{e_1}{\StyFunc{T_1}{T_2}}
-      \quad \StyJudge{P}{\Delta}{e_2}{T_1}
+      \StyJudge{P}{\Delta}{v_1}{\StyFunc{T_1}{T_2}}
+      \quad \StyJudge{P}{\Delta}{v_2}{T_1}
     }
     \quad\quad \infer[\STRuleIf] {
-      \StyJudge{P}{\Delta}{\If{e_1}{e_2}{e_3}}{T}
+      \StyJudge{P}{\Delta}{\If{\; v \;}{\; e_1 \;}{\; e_2 \;}}{T}
     } {
-      \StyJudge{P}{\Delta}{e_1}{\StyInt}
+      \StyJudge{P}{\Delta}{v}{\StyInt}
+      \quad \StyJudge{P}{\Delta}{e_1}{T}
       \quad \StyJudge{P}{\Delta}{e_2}{T}
-      \quad \StyJudge{P}{\Delta}{e_3}{T}
     } \\\\
     \infer[\STRuleLet] {
-      \StyJudge{P}{\Delta}{\Let{x}{e_1}{e_2}}{T_2}
+      \StyJudge{P}{\Delta}{\Let{\; x \;}{\; e_1 \;}{\; e_2 \;}}{T_2}
     } {
       \StyJudge{P}{\Delta}{e_1}{T_1}
       \quad \StyJudge{P}{\Delta, \typed{x}{T_1}}{e_2}{T_2}

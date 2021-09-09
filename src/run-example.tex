@@ -5,38 +5,77 @@
 \par 以下は \Yil で与えられた引数が偶数か奇数かを判定するプログラムの評価の例です．
 \TODO{構文と評価規則の変更に合わせて修正する}
 
-\if 0
-
 \begin{align*}
-  & P \; \defeq \; \\
-  &\quad\quad \Func{\code{is\_even}}{x}{\If{x = 0}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{x - 1}}}}}}, \\
-  &\quad\quad \Func{\code{is\_odd}}{x}{\If{x = 0}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{x - 1}}}}}} \\\\
-  & \Reduce{P}
-      {\App{\code{is\_even}}{2}}
-      {\Reduce{P}
-        {\If{2 = 0}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}}}
-      {\Reduce{P}
-        {\If{\false}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}} \\}
-      {&\Reduce{P}
-        {\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}}
-      {\Reduce{P}
-        {\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{1}}}}
-      {\Reduce{P}
-        {\App{\mathrm{not}}{\paren{\If{1 = 0}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}} \\}
-      {&\Reduce{P}
-        {\App{\mathrm{not}}{\paren{\If{\false}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}}}
-      {\Reduce{P}
-        {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}}
-      {\Reduce{P}
-        {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{0}}}}} \\}
-      {&\Reduce{P}
-        {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren{\If{0 = 0}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{0-1}}}}}}}}}}
-      {\Reduce{P}
-        {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren{\If{\true}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{0-1}}}}}}}}} \\}
-      {&\Reduce{P}
-        {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\true}}}}
-      {\Reduce{P}{\App{\mathrm{not}}{\false}}{\true}}
-      }}}}}}}}}}} \\
+  P \; &\defeq& \; \\
+  &\quad\quad \begin{array}{l}
+    \Func
+      {\code{is\_even}}{x}
+      {\\ \quad \Let
+        {\; \code{cond} \;}{\; x=0 \;}
+        {\\ \quad \If{\; \code{cond} \;}{\; \true \\ \quad}
+        {\\ \quad\quad \Let{\; x' \;}{\; x-1 \;}
+        {\\ \quad\quad \Let{\; y \;}{\; \App{\code{is\_odd}}{x'} \;}
+        {\\ \quad\quad \App{\mathrm{not}}{y} \;}}} \;}
+      }, \\
+    \Func
+      {\code{is\_odd}}{x}
+      {\\ \quad \Let
+        {\; \code{cond} \;}{\; x = 0 \;}
+        {\\ \quad \If{\; \code{cond} \;}{\; \false \\ \quad}
+        {\\ \quad\quad \Let{\; x' \;}{\; x-1 \;}
+        {\\ \quad\quad \Let{\; y \;}{\; \App{\code{is\_even}}{x'} \;}
+        {\\ \quad\quad \App{\mathrm{not}}{y} \;}}} \;}
+      }
+  \end{array}, \\\\ &
+    \Reduce{P}{\App{\code{is\_even}}{2} \\}{
+    \Reduce{P}{
+      & \Let{\; \code{cond} \;}{\; 2 = 0 \;}{ \\
+      & \If{\; \code{cond} \;}{\; \true \\ &}{\\
+      & \quad \Let{\; x' \;}{\; 2 - 1 \;}{\\
+      & \quad \Let{\; y \;}{\App{\; \code{is\_odd}}{x' \;}}{\\
+      & \quad \App{\mathrm{not}}{y}}}}} \\ }{
+    \Reduce{P}{
+      & \Let{\; \code{cond} \;}{\; \false \;}{ \\
+      & \If{\; \code{cond} \;}{\; \true \\ &}{\\
+      & \quad \Let{\; x' \;}{\; 2 - 1 \;}{\\
+      & \quad \Let{\; y \;}{\App{\; \code{is\_odd}}{x' \;}}{\\
+      & \quad \App{\mathrm{not}}{y}}}}} \\ }{
+    \Reduce{P}{
+      & \If{\; \false \;}{\; \true \\ &}{\\
+      & \quad \Let{\; x' \;}{\; 2 - 1 \;}{\\
+      & \quad \Let{\; y \;}{\App{\; \code{is\_odd}}{x' \;}}{\\
+      & \quad \App{\mathrm{not}}{y}}}} \\ }{
+    \Reduce{P}{
+      & \Let{\; x' \;}{\; 2 - 1 \;}{\\
+      & \Let{\; y \;}{\App{\; \code{is\_odd}}{x' \;}}{\\
+      & \App{\mathrm{not}}{y}}} \\ }{
+    \Reduce{P}{
+      & \Let{\; x' \;}{\; 1 \;}{\\
+      & \Let{\; y \;}{\App{\; \code{is\_odd}}{x' \;}}{\\
+      & \App{\mathrm{not}}{y}}} \\ }{
+    \Reduce{P}{
+      & \Let{\; y \;}{\App{\; \code{is\_odd}}{1 \;}}{\\
+      & \App{\mathrm{not}}{y}} \\ }{
+    \Reduce{P}{
+      & \Let{\; y \;}{ \\
+      & \quad \Let{\; \code{cond}}{1 = 0 \;}{\\
+      & \quad \If{\; \code{cond} \;}{\; \false \\
+      & \quad }{ \\
+      & \quad\quad \Let{\; x' \;}{1-1 \;}{ \\
+      & \quad\quad \Let{\; y}{\App{\; \code{is\_even}}{\; x' \;}}{ \\
+      & \quad\quad \App{\mathrm{not}}{y\; }}}}}}{\\
+      & \App{\mathrm{not}}{y}} \\ }{
+    \Reduce{P}{
+      & \Let{\; y \;}{ \\
+      & \quad \Let{\; \code{cond}}{\false \;}{\\
+      & \quad \If{\; \code{cond} \;}{\; \false \\
+      & \quad }{ \\
+      & \quad\quad \Let{\; x' \;}{1-1 \;}{ \\
+      & \quad\quad \Let{\; y}{\App{\; \code{is\_even}}{\; x' \;}}{ \\
+      & \quad\quad \App{\mathrm{not}}{y\; }}}}}}{\\
+      & \App{\mathrm{not}}{y}} \\}{
+      & \TODO{続きを書く}
+    }}}}}}}}} \\\\
   & \text{つまり} \quad \MultiReduce{P}{\App{\code{is\_even}}{2}}{\true} \\\\
   & \infer[\ERuleAppFunc] {
     \Reduce{P}
@@ -47,7 +86,7 @@
       \If{2 = 0}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{x-1}}}}}
     } \in P
   } \\\\
-  & \infer[\ERuleContext] {
+  & \infer {
     \Reduce{P}
         {\If{2 = 0}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}}}
         {\If{\false}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}}}
@@ -59,12 +98,12 @@
   & \Reduce{P}
         {\If{\false}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}}}
         {\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}} \quad\ERuleIfFalse \\\\
-  & \infer[\ERuleContext] {
+  & \infer {
     \Reduce{P}
         {\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}}
         {\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{1}}}}
   } {
-    \infer[\ERuleContext] {
+    \infer {
       \Reduce{P}
         {\App{\code{is\_odd}}{\paren{2-1}}}
         {\App{\code{is\_odd}}{1}}
@@ -76,7 +115,7 @@
       }
     }
   } \\\\
-  & \infer[\ERuleContext] {
+  & \infer {
     \Reduce{P}
         {\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{1}}}}
         {\App{\mathrm{not}}{\paren{\If{1 = 0}{\false}{\App{\mathrm{not}}{\paren{\App{\mathrm{is\_even}}{\paren{1-1}}}}}}}}
@@ -96,12 +135,12 @@
       \Func{\code{is\_odd}}{x}{\If{x=0}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{x-1}}}}}} \in P
     }
   } \\\\
-  & \hspace{-4em} \infer[\ERuleContext] {
+  & \hspace{-4em} \infer {
     \Reduce{P}
       {\App{\mathrm{not}}{\paren{\If{1 = 0}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}}}
       {\App{\mathrm{not}}{\paren{\If{\false}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}}}
   } {
-    \infer[\ERuleContext] {
+    \infer {
       \Reduce{P}
         {\If{1 = 0}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}
         {\If{\false}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}
@@ -113,7 +152,7 @@
       }
     }
   } \\\\
-  & \infer[\ERuleContext] {
+  & \infer {
     \Reduce{P}
       {\App{\mathrm{not}}{\paren{\If{\false}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}}}
       {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}}
@@ -123,17 +162,17 @@
       {\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}
       \quad \ERuleIfFalse
   } \\\\
-  & \infer[\ERuleContext] {
+  & \infer {
     \Reduce{P}
       {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}}
       {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{0}}}}}}
   } {
-    \infer[\ERuleContext] {
+    \infer {
       \Reduce{P}
         {\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}
         {\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{0}}}}
     } {
-      \infer[\ERuleContext] {
+      \infer {
         \Reduce{P}
           {\App{\code{is\_even}}{\paren{1-1}}}
           {\App{\code{is\_even}}{0}}
@@ -146,14 +185,14 @@
       }
     }
   }  \\\\
-  & \infer[\ERuleContext] {
+  & \infer {
     \Reduce{P}
       {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{0}}}}}}
       {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren
         {\If{0 = 0}{\true}{\dots}}
       }}}}
   } {
-    \infer[\ERuleContext] {
+    \infer {
       \Reduce{P}
         {\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{0}}}}
         {\App{\mathrm{not}}{\paren
@@ -169,7 +208,7 @@
       }
     }
   } \\\\
-  & \infer[\ERuleContext] {
+  & \infer {
     \Reduce{P}
         {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren
           {\If{0 = 0}{\true}{\dots}}
@@ -178,12 +217,12 @@
           {\If{\true}{\true}{\dots}}
         }}}}
   } {
-    \infer[\ERuleContext] {
+    \infer {
       \Reduce{P}
         {\App{\mathrm{not}}{\paren{\If{0 = 0}{\true}{\dots}}}}
         {\App{\mathrm{not}}{\paren{\If{\true}{\true}{\dots}}}}
     } {
-      \infer[\ERuleContext] {
+      \infer {
         \Reduce{P}
           {\If{0 = 0}{\true}{\dots}}
           {\If{\true}{\true}{\dots}}
@@ -196,14 +235,14 @@
       }
     }
   } \\\\
-  & \infer[\ERuleContext] {
+  & \infer {
     \Reduce{P}
       {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren
           {\If{\true}{\true}{\dots}}
       }}}}
       {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\true}}}}
   } {
-    \infer[\ERuleContext] {
+    \infer {
       \Reduce{P}
         {\App{\mathrm{not}}{\paren{\If{\true}{\true}{\dots}}}}
         {\App{\mathrm{not}}{\true}}
@@ -213,7 +252,7 @@
         {\true} \quad \ERuleIfTrue
     }
   } \\\\
-  & \infer[\ERuleContext] {
+  & \infer {
     \Reduce{P}
       {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\true}}}}
       {\App{\mathrm{not}}{\false}}
@@ -232,5 +271,3 @@
     \sem{\mathrm{not}}\paren{\false} = \true
   }
 \end{align*}
-
-\fi

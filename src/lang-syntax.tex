@@ -4,7 +4,7 @@
 \begin{figure}[h]
   \begin{align*}
     \text{(プログラム)} \; P & \seteq \Func{f}{\seq{x}}{e} \mid P, \; \Func{f}{\seq{x}}{e}                                         \\
-    \text{(式)} \; e         & \seteq x \mid n \mid \mathrm{op} \mid \App{v_1}{v_2} \mid \If{v}{e_1}{e_2} \mid \Let{x}{e_1}{e_2} \\
+    \text{(式)} \; e         & \seteq x \mid n \mid \mathrm{op} \mid \App{v_1 \;}{v_2} \mid \If{\; v \;}{\; e_1 \;}{\; e_2 \;} \mid \Let{\; x \;}{\; e_1 \;}{\; e_2 \;} \\
     \text{(値)} \; v         & \seteq x \mid n \mid \App{f}{\seq{v}} \where{|\seq{v}| < \arity{P}{f}}
   \end{align*}
   \caption{Yilコア言語の構文}
@@ -15,7 +15,7 @@
 $x$, $y$ は式 $e$ の上のメタ変数であり，$f$ は関数変数の上のメタ変数である．
 $\mathrm{op}$ は組み込み関数の変数の集合である．これには整数上の和 $+$, 差 $-$, 積 $\times$, 比較 $<$ が含まれる.
 組み込み関数の関数適用は慣習に合わせた表記をする場合がある．つまり $x = y$ は $\App{\App{=}{x}}{y}$ と同等である． 
-$\App{v_1}{v_2}$ は関数適用であり，$\If{v}{e_1}{e_2}$ は条件分岐を表す．$\If{v}{e_1}{e_2}$ は $v$ が $0$ の時に $e_1$ を評価し，$1$ の時に $e_2$ を評価する．
+$\App{v_1}{v_2}$ は関数適用であり，$\If{\; v \;}{\; e_1 \;}{\; e_2 \;}$ は条件分岐を表す．$\If{\; v \;}{\; e_1 \;}{\; e_2 \;}$ は $v$ が $0$ の時に $e_1$ を評価し，$1$ の時に $e_2$ を評価する．
 読みやすさのために $0$ を $\true$，$1$ を $\false$ と書くことがある．
 組み込み関数変数 $\mathrm{not} \in \mathrm{op}$ は $\true$ を $\false$ に，$\false$ を $\true$ に写す関数である．
 $\arity{P}{\cdot}$ はプログラム $P$ における関数の引数の数を表す． つまり $\Func{f}{\seq{x}}{e} \in P$ の時，
