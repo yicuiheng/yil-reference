@@ -63,7 +63,7 @@
       & \quad }{ \\
       & \quad\quad \Let{\; x' \;}{1-1 \;}{ \\
       & \quad\quad \Let{\; y}{\App{\; \code{is\_even}}{\; x' \;}}{ \\
-      & \quad\quad \App{\mathrm{not}}{y\; }}}}}}{\\
+      & \quad\quad \App{\mathrm{not}}{y \;}}}}}}{\\
       & \App{\mathrm{not}}{y}} \\ }{
     \Reduce{P}{
       & \Let{\; y \;}{ \\
@@ -72,10 +72,80 @@
       & \quad }{ \\
       & \quad\quad \Let{\; x' \;}{1-1 \;}{ \\
       & \quad\quad \Let{\; y}{\App{\; \code{is\_even}}{\; x' \;}}{ \\
-      & \quad\quad \App{\mathrm{not}}{y\; }}}}}}{\\
+      & \quad\quad \App{\mathrm{not}}{y \;}}}}}}{\\
       & \App{\mathrm{not}}{y}} \\}{
-      & \TODO{続きを書く}
-    }}}}}}}}} \\\\
+    \Reduce{P}{
+      & \Let{\; y \;}{ \\
+      & \quad \If{\; \false \;}{\; \false \\
+      & \quad }{ \\
+      & \quad\quad \Let{\; x' \;}{1-1 \;}{ \\
+      & \quad\quad \Let{\; y}{\App{\; \code{is\_even}}{\; x' \;}}{ \\
+      & \quad\quad \App{\mathrm{not}}{y \;}}}}}{\\
+      & \App{\mathrm{not}}{y}} \\ }{
+    \Reduce{P}{
+      & \Let{\; y \;}{ \\
+      & \quad \Let{\; x' \;}{1-1 \;}{ \\
+      & \quad \Let{\; y}{\App{\; \code{is\_even}}{\; x' \;}}{ \\
+      & \quad \App{\mathrm{not}}{y \;}}}}{\\
+      & \App{\mathrm{not}}{y}} \\ }{
+    \Reduce{P}{
+      & \Let{\; y \;}{ \\
+      & \quad \Let{\; x' \;}{0 \;}{ \\
+      & \quad \Let{\; y}{\App{\; \code{is\_even}}{\; x' \;}}{ \\
+      & \quad \App{\mathrm{not}}{y \;}}}}{\\
+      & \App{\mathrm{not}}{y}} \\ }{
+    \Reduce{P}{
+      & \Let{\; y \;}{ \\
+      & \quad \Let{\; y}{\App{\; \code{is\_even}}{\; 0 \;}}{ \\
+      & \quad \App{\mathrm{not}}{y \;}}}{\\
+      & \App{\mathrm{not}}{y}} \\ }{
+    \Reduce{P}{
+      & \Let{\; y \;}{ \\
+      & \quad \Let{\; y}{ \\
+      & \quad\quad \Let{\; \code{cond} \;}{\; 0 = 0 \;}{ \\
+      & \quad\quad \If{\; \code{cond} \;}{\; \true \\
+      & \quad\quad }{ \\
+      & \quad\quad\quad \Let{\; x' \;}{\; 0-1 \;}{ \\
+      & \quad\quad\quad \Let{\; y \;}{\; \App{\code{is\_odd}}{x'} \;}{ \\
+      & \quad\quad\quad \App{\mathrm{not}}{y \;}}}}}}{ \\
+      & \quad \App{\mathrm{not}}{y \;}}}{\\
+      & \App{\mathrm{not}}{y}} \\ }{
+    \Reduce{P}{
+      & \Let{\; y \;}{ \\
+      & \quad \Let{\; y}{ \\
+      & \quad\quad \Let{\; \code{cond} \;}{\; \true \;}{ \\
+      & \quad\quad \If{\; \code{cond} \;}{\; \true \\
+      & \quad\quad }{ \\
+      & \quad\quad\quad \Let{\; x' \;}{\; 0-1 \;}{ \\
+      & \quad\quad\quad \Let{\; y \;}{\; \App{\code{is\_odd}}{x'} \;}{ \\
+      & \quad\quad\quad \App{\mathrm{not}}{y \;}}}}}}{ \\
+      & \quad \App{\mathrm{not}}{y \;}}}{\\
+      & \App{\mathrm{not}}{y}} \\ }{
+    \Reduce{P}{
+      & \Let{\; y \;}{ \\
+      & \quad \Let{\; y}{ \\
+      & \quad\quad \If{\; \true \;}{\; \true \\
+      & \quad\quad }{ \\
+      & \quad\quad\quad \Let{\; x' \;}{\; 0-1 \;}{ \\
+      & \quad\quad\quad \Let{\; y \;}{\; \App{\code{is\_odd}}{x'} \;}{ \\
+      & \quad\quad\quad \App{\mathrm{not}}{y \;}}}}}{ \\
+      & \quad \App{\mathrm{not}}{y \;}}}{\\
+      & \App{\mathrm{not}}{y}} \\ }{
+    \Reduce{P}{
+      & \Let{\; y \;}{ \\
+      & \quad \Let{\; y \;}{\; \true \;}{ \\
+      & \quad \App{\mathrm{not}}{y \;}}}{\\
+      & \App{\mathrm{not}}{y}} \\ }{
+    \Reduce{P}{
+      & \Let
+          {\; y \;}{\; \App{\mathrm{not}}{\; \true \;}}
+          {\; \App{\mathrm{not}}{y} \;} \\ }{
+    \Reduce{P}{
+      & \Let{\; y \;}{\; \false \;}{\; \App{\mathrm{not}}{y}} \\ }{
+    \Reduce{P}{
+      & \App{\mathrm{not}}{\; \false\; } \\ }{
+      & \true
+    }}}}}}}}}}}}}}}}}}}} \\\\
   & \text{つまり} \quad \MultiReduce{P}{\App{\code{is\_even}}{2}}{\true} \\\\
   & \infer[\ERuleAppFunc] {
     \Reduce{P}
