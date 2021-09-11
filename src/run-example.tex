@@ -2,8 +2,8 @@
 \section{\Yil の式の評価例}
 \label{sec:lang:semantics:example}
 
-\par 以下は \Yil で与えられた引数が偶数か奇数かを判定するプログラムの評価の例です．
-\TODO{構文と評価規則の変更に合わせて修正する}
+\par 以下に \Yil で与えられた引数が偶数か奇数かを判定するプログラムの評価の例を示す．
+ただし $\Func{\code{is\_even}}{x}{\dots} \in P$ にように文脈から明らかなものは紙面の都合上 $\dots$ で省略することがある．
 
 \begin{align*}
   P \; &\defeq& \; \\
@@ -150,191 +150,392 @@
   & \infer[\ERuleAppFunc] {
     \Reduce{P}
         {\App{\code{is\_even}}{2}}
-        {\If{2 = 0}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}}}
+        {\Let{\; \code{cond}}{2 = 0 \;}{\; \If{\; \code{cond} \;}{\; \true \;}{\; \Let{\; x'}{2-1\;}{\; \Let{\; y}{\App{\code{is\_odd}}{x' \;}}{\; \App{\mathrm{not}}{y}}}}}}
   } {
-    \Func{\code{is\_even}}{x}{
-      \If{2 = 0}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{x-1}}}}}
-    } \in P
+    \Func
+      {\code{is\_even}}{x}
+      {\dots}
+    \in P
   } \\\\
-  & \infer {
+  & \hspace{-4em}\infer[\ERuleLetCtx] {
     \Reduce{P}
-        {\If{2 = 0}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}}}
-        {\If{\false}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}}}
+        {\Let{\; \code{cond}}{2 = 0 \;}{\; \If{\; \code{cond} \;}{\; \true \;}{\; \Let{\; x'}{2-1\;}{\; \Let{\; y}{\App{\code{is\_odd}}{x' \;}}{\; \App{\mathrm{not}}{y}}}}}}
+        {\Let{\; \code{cond}}{\false \;}{\dots}}
   } {
     \infer[\ERuleAppOp]
         {\Reduce{P}{2 = 0}{\false}}
         {\sem{=}\paren{2, 0} = \false}
   } \\\\
-  & \Reduce{P}
-        {\If{\false}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}}}
-        {\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}} \quad\ERuleIfFalse \\\\
-  & \infer {
+  &  \hspace{-4em}\Reduce{P}
+        {\Let{\; \code{cond}}{\false \;}{\; \If{\; \code{cond} \;}{\; \true \;}{\; \Let{\; x'}{2-1\;}{\; \Let{\; y}{\App{\code{is\_odd}}{x' \;}}{\; \App{\mathrm{not}}{y}}}}}}
+        {\If{\; \false \;}{\; \true \;}{\dots}} \quad\ERuleLetSubst \\\\
+  & \hspace{-4em}\Reduce{P}
+        {\If{\; \false \;}{\; \true \;}{\; \Let{\; x'}{2-1\;}{\; \Let{\; y}{\App{\code{is\_odd}}{x' \;}}{\; \App{\mathrm{not}}{y}}}}}
+        {\Let{\; x'}{2-1\;}{\; \Let{\; y}{\App{\code{is\_odd}}{x' \;}}{\; \App{\mathrm{not}}{y}}}} \quad\ERuleIfFalse \\\\
+  & \infer[\ERuleLetCtx] {
     \Reduce{P}
-        {\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{2-1}}}}}
-        {\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{1}}}}
+      {\Let{\; x'}{2-1\;}{\; \Let{\; y}{\App{\code{is\_odd}}{x' \;}}{\; \App{\mathrm{not}}{y}}}}
+      {\Let{\; x'}{1\;}{\; \Let{\; y}{\App{\code{is\_odd}}{x' \;}}{\; \App{\mathrm{not}}{y}}}}
   } {
-    \infer {
-      \Reduce{P}
-        {\App{\code{is\_odd}}{\paren{2-1}}}
-        {\App{\code{is\_odd}}{1}}
+    \infer[\ERuleAppOp] {
+      \Reduce{P}{2-1}{1}
     } {
-      \infer[\ERuleAppOp] {
-        \Reduce{P}{2-1}{1}
-      } {
-        \sem{-}\paren{2, 1} = 1
-      }
+      \sem{-}\paren{2, 1} = 1
     }
   } \\\\
-  & \infer {
+  &  \Reduce{P}
+      {\Let{\; x'}{1\;}{\; \Let{\; y}{\App{\code{is\_odd}}{x' \;}}{\; \App{\mathrm{not}}{y}}}}
+      {\Let{\; y}{\App{\code{is\_odd}}{1 \;}}{\; \App{\mathrm{not}}{y}}} \quad\ERuleLetSubst \\\\
+  & \hspace{-4em} \infer[\ERuleLetCtx] {
     \Reduce{P}
-        {\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{1}}}}
-        {\App{\mathrm{not}}{\paren{\If{1 = 0}{\false}{\App{\mathrm{not}}{\paren{\App{\mathrm{is\_even}}{\paren{1-1}}}}}}}}
+      {\begin{array}{l}
+        \Let{\; y}{\App{\code{is\_odd}}{1 \;}}{\\ \App{\mathrm{not}}{y}}
+      \end{array}}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\\ \quad \Let{\; \code{cond}}{1=0 \;}{\\ \quad \If{\; \code{cond} \;}{\; \false \;}{\; \Let{\; x'}{1-1 \;}{\; \Let{\; y}{\App{\code{is\_even}}{x'\; }}{\App{\; \mathrm{not}}{y \;}}}}}}
+          {\\ \App{\mathrm{not}}{y}}
+      \end{array}}
   } {
     \infer[\ERuleAppFunc] {
       \Reduce{P}
-          {\App{\code{is\_odd}}{1}}
-          {\If
-            {1 = 0}
-            {\false}
-            {\App
-              {\mathrm{not}}
-              {\paren{\App
-                {\code{is\_even}}
-                {\paren{1-1}}}}}}
+        {\App{\code{is\_odd}}{1}}
+        {\dots}
     } {
-      \Func{\code{is\_odd}}{x}{\If{x=0}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{x-1}}}}}} \in P
+      \Func{\code{is\_odd}}{x}{\dots} \in P
     }
   } \\\\
-  & \hspace{-4em} \infer {
+  & \hspace{-4em} \infer[\ERuleLetCtx] {
     \Reduce{P}
-      {\App{\mathrm{not}}{\paren{\If{1 = 0}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}}}
-      {\App{\mathrm{not}}{\paren{\If{\false}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}}}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\\ \quad \Let{\; \code{cond}}{1=0 \;}{\\ \quad \If{\; \code{cond} \;}{\; \false \\ \quad}{\; \Let{\; x'}{1-1 \;}{\; \Let{\; y}{\App{\code{is\_even}}{x'\; }}{\App{\; \mathrm{not}}{y \;}}}}}}
+          {\\ \App{\mathrm{not}}{y}}
+      \end{array}}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\\ \quad \Let{\; \code{cond}}{\false \;}{\\ \quad \If{\; \code{cond} \;}{\; \false \\ \quad}{\; \Let{\; x'}{1-1 \;}{\; \Let{\; y}{\App{\code{is\_even}}{x'\; }}{\App{\; \mathrm{not}}{y \;}}}}}}
+          {\\ \App{\mathrm{not}}{y}}
+      \end{array}}
   } {
-    \infer {
+    \infer[\ERuleLetCtx] {
       \Reduce{P}
-        {\If{1 = 0}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}
-        {\If{\false}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}
+        {\begin{array}{l}
+          \Let
+            {\; \code{cond}}{1=0 \;}
+            {\\ \If
+                  {\; \code{cond} \;}
+                  {\; \false \\ \quad}
+                  {\; \Let{\; x'}{1-1 \;}{\; \Let{\; y}{\App{\code{is\_even}}{x'\; }}{\App{\; \mathrm{not}}{y \;}}}}}
+        \end{array}}
+        {\begin{array}{l}
+          \Let
+            {\; \code{cond}}{\false \;}
+            {\\ \If
+                  {\; \code{cond} \;}
+                  {\; \false \\ \quad}
+                  {\; \Let{\; x'}{1-1 \;}{\; \Let{\; y}{\App{\code{is\_even}}{x'\; }}{\App{\; \mathrm{not}}{y \;}}}}}
+        \end{array}}
     } {
       \infer[\ERuleAppOp] {
-        \Reduce{P}{1 = 0}{\false}
+        \Reduce{P}{1=0}{\false}
       } {
         \sem{=}\paren{1, 0} = \false
       }
     }
   } \\\\
-  & \infer {
+  & \hspace{-4em} \infer[\ERuleLetCtx] {
     \Reduce{P}
-      {\App{\mathrm{not}}{\paren{\If{\false}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}}}
-      {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\\ \quad \Let{\; \code{cond}}{\false \;}{\\ \quad \If{\; \code{cond} \;}{\; \false \\ \quad}{\; \Let{\; x'}{1-1 \;}{\; \Let{\; y}{\App{\code{is\_even}}{x'\; }}{\App{\; \mathrm{not}}{y \;}}}}}}
+          {\\ \App{\mathrm{not}}{y}}
+      \end{array}}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\\ \quad \If{\; \false \;}{\; \false \\ \quad}{\; \Let{\; x'}{1-1 \;}{\; \Let{\; y}{\App{\code{is\_even}}{x'\; }}{\App{\; \mathrm{not}}{y \;}}}}}
+          {\\ \App{\mathrm{not}}{y}}
+      \end{array}}
   } {
     \Reduce{P}
-      {\If{\false}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}
-      {\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}
-      \quad \ERuleIfFalse
+      {\begin{array}{l}
+        \Let{\; \code{cond}}{\false \;}{\\ \If{\; \code{cond} \;}{\; \false \\ }{\; \Let{\; x'}{1-1 \;}{\; \Let{\; y}{\App{\code{is\_even}}{x'\; }}{\App{\; \mathrm{not}}{y \;}}}}}
+      \end{array}}
+      {\begin{array}{l}
+        \If{\; \false \;}{\; \false \\ }{\; \Let{\; x'}{1-1 \;}{\; \Let{\; y}{\App{\code{is\_even}}{x'\; }}{\App{\; \mathrm{not}}{y \;}}}}
+      \end{array}} \quad\ERuleLetSubst
   } \\\\
-  & \infer {
+  & \hspace{-4em} \infer[\ERuleLetCtx] {
     \Reduce{P}
-      {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}}}
-      {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{0}}}}}}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\\ \quad \If{\; \false \;}{\; \false \\ \quad}{\; \Let{\; x'}{1-1 \;}{\; \Let{\; y}{\App{\code{is\_even}}{x'\; }}{\App{\; \mathrm{not}}{y \;}}}}}
+          {\\ \App{\mathrm{not}}{y}}
+      \end{array}}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\\ \quad \Let{\; x'}{1-1 \;}{\; \Let{\; y}{\App{\code{is\_even}}{x'\; }}{\App{\; \mathrm{not}}{y \;}}}}
+          {\\ \App{\mathrm{not}}{y}}
+      \end{array}}
   } {
-    \infer {
+    \Reduce{P}
+      {\begin{array}{l}
+        \If{\; \false \;}{\; \false \\}{\; \Let{\; x'}{1-1 \;}{\; \Let{\; y}{\App{\code{is\_even}}{x'\; }}{\App{\; \mathrm{not}}{y \;}}}}
+      \end{array}}
+      {\Let{\; x'}{1-1 \;}{\; \Let{\; y}{\App{\code{is\_even}}{x'\; }}{\App{\; \mathrm{not}}{y \;}}}}
+        \quad \ERuleIfFalse
+  } \\\\
+  & \infer[\ERuleLetCtx] {
+    \Reduce{P}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\\ \quad \Let{\; x'}{1-1 \;}{\; \Let{\; y}{\App{\code{is\_even}}{x'\; }}{\App{\; \mathrm{not}}{y \;}}}}
+          {\\ \App{\mathrm{not}}{y}}
+      \end{array}}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\\ \quad \Let{\; x'}{0 \;}{\; \Let{\; y}{\App{\code{is\_even}}{x'\; }}{\App{\; \mathrm{not}}{y \;}}}}
+          {\\ \App{\mathrm{not}}{y}}
+      \end{array}}
+  } {
+    \infer[\ERuleLetCtx] {
       \Reduce{P}
-        {\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{1-1}}}}}
-        {\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{0}}}}
+        {\begin{array}{l}
+          \Let{\; x'}{1-1 \;}{\; \Let{\; y}{\App{\code{is\_even}}{x'\; }}{\App{\; \mathrm{not}}{y}}}
+        \end{array}}
+        {\begin{array}{l}
+          \Let{\; x'}{0 \;}{\; \Let{\; y}{\App{\code{is\_even}}{x'\; }}{\App{\; \mathrm{not}}{y \;}}}
+        \end{array}}
     } {
-      \infer {
-        \Reduce{P}
-          {\App{\code{is\_even}}{\paren{1-1}}}
-          {\App{\code{is\_even}}{0}}
+      \infer[\ERuleAppOp] {
+        \Reduce{P}{1-1}{0}
       } {
-        \infer[\ERuleAppOp] {
-          \Reduce{P}{1-1}{0}
-        } {
-          \sem{-}\paren{1, 1} = 0
-        }
+        \sem{-}\paren{1, 1} = 0
       }
     }
-  }  \\\\
-  & \infer {
+  } \\\\
+  & \infer[\ERuleLetCtx] {
     \Reduce{P}
-      {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{0}}}}}}
-      {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren
-        {\If{0 = 0}{\true}{\dots}}
-      }}}}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\\ \quad \Let{\; x'}{0 \;}{\; \Let{\; y}{\App{\code{is\_even}}{x'\; }}{\App{\; \mathrm{not}}{y \;}}}}
+          {\\ \App{\mathrm{not}}{y}}
+      \end{array}}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\\ \quad \Let{\; y}{\App{\code{is\_even}}{0\; }}{\App{\; \mathrm{not}}{y \;}}}
+          {\\ \App{\mathrm{not}}{y}}
+      \end{array}}
   } {
-    \infer {
+    \Reduce{P}
+      {\Let{\; x'}{0 \;}{\; \Let{\; y}{\App{\code{is\_even}}{x'\; }}{\App{\; \mathrm{not}}{y \;}}}}
+      {\; \Let{\; y}{\App{\code{is\_even}}{0\; }}{\App{\; \mathrm{not}}{y \;}}}
+      \quad \ERuleLetSubst
+  } \\\\
+  & \infer[\ERuleLetCtx] {
+    \Reduce{P}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\\ \quad \Let{\; y}{\App{\code{is\_even}}{0\; }}{\App{\; \mathrm{not}}{y \;}}}
+          {\\ \App{\mathrm{not}}{y}}
+      \end{array}}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\\ \quad \Let{\; y}
+              {\\ \quad\quad \Let{\; \code{cond} }{0=0 \;}{\; \If{\; \code{cond} \;}{\; \true \;}{\dots}}}
+              {\\ \quad \App{\mathrm{not}}{y \;}}}
+          {\\ \App{\mathrm{not}}{y}}
+      \end{array}}
+  } {
+    \infer[\ERuleLetCtx] {
       \Reduce{P}
-        {\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{0}}}}
-        {\App{\mathrm{not}}{\paren
-          {\If{0 = 0}{\true}{\dots}}
-        }}
+        {\begin{array}{l}
+          \Let{\; y}{\App{\code{is\_even}}{0\; }}{\App{\; \mathrm{not}}{y \;}}
+        \end{array}}
+        {\begin{array}{l}
+          \Let{\; y}
+              {\\ \quad \Let{\; \code{cond}}{0=0 \;}{\; \If{\; \code{cond} \;}{\; \true \;}{\dots}}}
+              {\\ \App{\mathrm{not}}{y \;}}
+        \end{array}}
     } {
       \infer[\ERuleAppFunc] {
         \Reduce{P}
-          {\App{\code{is\_even}}{0}}
-          {\If{0 = 0}{\true}{\dots}}
+          {\App{\code{is\_even}}{0\;}}
+          {\Let{\; \code{cond}}{0=0 \;}{\; \If{\; \code{cond} \;}{\; \true \;}{\dots}}}
       } {
-        \Func{\code{is\_even}}{x}{\If{x = 0}{\true}{\dots}} \in P
+        \Func{\code{is\_even}}{x}{\dots} \in P
       }
     }
   } \\\\
-  & \infer {
+  & \infer[\ERuleLetCtx] {
     \Reduce{P}
-        {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren
-          {\If{0 = 0}{\true}{\dots}}
-        }}}}
-        {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren
-          {\If{\true}{\true}{\dots}}
-        }}}}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\\ \quad \Let{\; y}
+              {\\ \quad\quad \Let{\; \code{cond} }{0=0 \;}{\; \If{\; \code{cond} \;}{\; \true \;}{\dots}}}
+              {\\ \quad \App{\mathrm{not}}{y \;}}}
+          {\\ \App{\mathrm{not}}{y}}
+      \end{array}}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\\ \quad \Let{\; y}
+              {\\ \quad\quad \Let{\; \code{cond} }{\true \;}{\; \If{\; \code{cond} \;}{\; \true \;}{\dots}}}
+              {\\ \quad \App{\mathrm{not}}{y \;}}}
+          {\\ \App{\mathrm{not}}{y}}
+      \end{array}}
   } {
-    \infer {
+    \infer[\ERuleLetCtx] {
       \Reduce{P}
-        {\App{\mathrm{not}}{\paren{\If{0 = 0}{\true}{\dots}}}}
-        {\App{\mathrm{not}}{\paren{\If{\true}{\true}{\dots}}}}
+        {\begin{array}{l}
+          \Let{\; y}
+            {\\ \quad \Let{\; \code{cond} }{0=0 \;}{\; \If{\; \code{cond} \;}{\; \true \;}{\dots}}}
+            {\\ \App{\mathrm{not}}{y \;}}
+        \end{array}}
+        {\begin{array}{l}
+          \Let{\; y}
+            {\\ \quad \Let{\; \code{cond} }{\true \;}{\; \If{\; \code{cond} \;}{\; \true \;}{\dots}}}
+            {\\ \App{\mathrm{not}}{y \;}}
+        \end{array}}
     } {
-      \infer {
+      \infer[\ERuleLetCtx] {
         \Reduce{P}
-          {\If{0 = 0}{\true}{\dots}}
-          {\If{\true}{\true}{\dots}}
+          {\begin{array}{l}
+              \Let{\; \code{cond} }{0=0 \;}{\; \If{\; \code{cond} \;}{\; \true \;}{\dots}}
+          \end{array}}
+          {\begin{array}{l}
+            \Let{\; \code{cond} }{\true \;}{\; \If{\; \code{cond} \;}{\; \true \;}{\dots}}
+          \end{array}}
       } {
         \infer[\ERuleAppOp] {
-          \Reduce{P}{0 = 0}{\true}
+          \Reduce{P}{0=0}{\true}
         } {
           \sem{=}\paren{0, 0} = \true
         }
       }
     }
   } \\\\
-  & \infer {
+  & \infer[\ERuleLetCtx] {
     \Reduce{P}
-      {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\paren
-          {\If{\true}{\true}{\dots}}
-      }}}}
-      {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\true}}}}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\\ \quad \Let{\; y}
+              {\\ \quad\quad \Let{\; \code{cond} }{\true \;}{\; \If{\; \code{cond} \;}{\; \true \;}{\dots}}}
+              {\\ \quad \App{\mathrm{not}}{y \;}}}
+          {\\ \App{\mathrm{not}}{y}}
+      \end{array}}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\\ \quad \Let{\; y}
+              {\\ \quad\quad \If{\; \true \;}{\; \true \;}{\dots}}
+              {\\ \quad \App{\mathrm{not}}{y \;}}}
+          {\\ \App{\mathrm{not}}{y}}
+      \end{array}}
   } {
-    \infer {
+    \infer[\ERuleLetCtx] {
       \Reduce{P}
-        {\App{\mathrm{not}}{\paren{\If{\true}{\true}{\dots}}}}
-        {\App{\mathrm{not}}{\true}}
+        {\begin{array}{l}
+            \Let{\; y}
+              {\\ \quad \Let{\; \code{cond} }{\true \;}{\; \If{\; \code{cond} \;}{\; \true \;}{\dots}}}
+              {\\ \App{\mathrm{not}}{y \;}}
+        \end{array}}
+        {\begin{array}{l}
+            \Let{\; y}
+              {\\ \quad \If{\; \true \;}{\; \true \;}{\dots}}
+              {\\ \App{\mathrm{not}}{y \;}}
+        \end{array}}
     } {
-      \Reduce{P}
-        {\If{\true}{\true}{\dots}}
-        {\true} \quad \ERuleIfTrue
+      \infer[\ERuleLetCtx] {
+        \Reduce{P}
+          {\begin{array}{l}
+              \Let{\; y}
+                {\\ \quad \Let{\; \code{cond} }{\true \;}{\; \If{\; \code{cond} \;}{\; \true \;}{\dots}}}
+                {\\ \App{\mathrm{not}}{y \;}}
+          \end{array}}
+          {\begin{array}{l}
+              \Let{\; y}
+                {\\ \quad \If{\; \true \;}{\; \true \;}{\dots}}
+                {\\ \App{\mathrm{not}}{y \;}}
+          \end{array}}
+      } {
+        \Reduce{P}
+          {\Let{\; \code{cond} }{\true \;}{\; \If{\; \code{cond} \;}{\; \true \;}{\dots}}}
+          {\If{\; \true \;}{\; \true \;}{\dots}}
+          \quad \ERuleLetSubst
+      }
     }
   } \\\\
-  & \infer {
+  & \infer[\ERuleLetCtx] {
     \Reduce{P}
-      {\App{\mathrm{not}}{\paren{\App{\mathrm{not}}{\true}}}}
-      {\App{\mathrm{not}}{\false}}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\\ \quad \Let{\; y}
+              {\\ \quad\quad \If{\; \true \;}{\; \true \;}{\dots}}
+              {\\ \quad \App{\mathrm{not}}{y \;}}}
+          {\\ \App{\mathrm{not}}{y}}
+      \end{array}}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\\ \quad \Let{\; y}{\true \;}{\; \App{\mathrm{not}}{y \;}}}
+          {\\ \App{\mathrm{not}}{y}}
+      \end{array}}
+  } {
+    \infer[\ERuleLetCtx] {
+      \Reduce{P}
+        {\begin{array}{l}
+          \Let{\; y}
+              {\If{\; \true \;}{\; \true \;}{\dots} \;}
+              {\; \App{\mathrm{not}}{y \;}}
+        \end{array}}
+        {\begin{array}{l}
+          \Let{\; y}{\true \;}{\; \App{\mathrm{not}}{y \;}}
+        \end{array}}
+    } {
+      \Reduce{P}
+        {\begin{array}{l}
+          \If{\; \true \;}{\; \true \;}{\dots}
+        \end{array}}
+        {\begin{array}{l}
+          \true
+        \end{array}}
+        \quad \ERuleIfTrue
+    }
+  } \\\\
+  & \infer[\ERuleLetCtx] {
+    \Reduce{P}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\\ \quad \Let{\; y}{\true \;}{\; \App{\mathrm{not}}{y \;}}}
+          {\\ \App{\mathrm{not}}{y}}
+      \end{array}}
+      {\begin{array}{l}
+        \Let{\; y}
+          {\App{\mathrm{not}}{\true \;}}
+          {\; \App{\mathrm{not}}{y}}
+      \end{array}}
+  } {
+    \Reduce{P}
+      {\begin{array}{l}
+        \Let{\; y}{\true \;}{\; \App{\mathrm{not}}{y \;}}
+      \end{array}}
+      {\begin{array}{l}
+        \App{\mathrm{not}}{\true \;}
+      \end{array}}
+      \quad \ERuleLetSubst
+  } \\\\
+  & \infer[\ERuleLetCtx] {
+    \Reduce{P}
+      {\Let{\; y}{\App{\mathrm{not}}{\true} \;}{\; \App{\mathrm{not}}{y}}}
+      {\Let{\; y}{\false \;}{\; \App{\mathrm{not}}{y}}}
   } {
     \infer[\ERuleAppOp] {
-      \Reduce{P}
-        {\App{\mathrm{not}}{\true}}
-        {\false}
+      \Reduce{P}{\App{\mathrm{not}}{\true}}{\false}
     } {
       \sem{\mathrm{not}}\paren{\true} = \false
     }
   } \\\\
+  & \Reduce{P}
+    {\Let{\; y}{\false \;}{\; \App{\mathrm{not}}{y}}}
+    {\App{\mathrm{not}}{\false}} \quad \ERuleLetSubst \\\\
   & \infer[\ERuleAppOp] {
     \Reduce{P}{\App{\mathrm{not}}{\false}}{\true}
   } {
