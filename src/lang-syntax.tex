@@ -21,7 +21,41 @@ $\App{v_1}{v_2}$ は関数適用であり，$\If{\; v \;}{\; e_1 \;}{\; e_2 \;}$
 $\arity{P}{\cdot}$ はプログラム $P$ における関数の引数の数を表す． つまり $\Func{f}{\seq{x}}{e} \in P$ の時，
 $\arity{P}{f} = |\seq{x}|$ であり $\arity{P}{+} = 2$ である．
 
-\TODO{$subst{x}{e_1}{e_2}$ を定義する}
+\par \Yil 言語の実装と形式的定義とは異なる点がいくつかある．
+例えば実装では if 式の条件部分に式を書けるが，形式的定義では型システムの都合上値に限定している．
+つまり実装では $\If{\; x = 0 \;}{\; \true \;}{\; \false \;}$ と書けるが，
+形式定義では $\Let{\; \code{cond}}{x = 0 \;}{\; \If{\; \code{cond} \;}{\; \true \;}{\; \false\;}}$ などと書く必要がある．
+また，実装では式が出現しうるあらゆる場所に関数を書けるが，形式的定義ではトップレベルに限定している．
+この違いは lambda lifting ~\cite{DBLP:conf/fpca/Johnsson85} というプログラム上のメタ操作によって無視できるので本質的な差にはならない．
+
+\par 以降に使う補助関数を図~\ref{fig:lang:aux} に定義する．
+$\fv{P}$, $\fv{e}$ はそれぞれプログラム $P$ もしくは式 $e$ の自由変数である．
+さらに $\subst{e}{x}{P}$, $\subst{e_1}{x}{e_2}$ はそれぞれプログラム$P$ もしくは式 $e_2$ 中の自由変数 $x$ に式 $e_1$ を代入して得られたプログラムもしくは式を表す．
+\begin{figure}[H]
+  \begin{align*}
+    \subst{e_1}{x}{\paren{\Func{f}{\seq{x}}{e_2}}} \; &\defeq \; \Func{f}{\seq{x}}{e} &\where{x = f \text{または} x \in \seq{x}} \\
+    \subst{e_1}{x}{\paren{\Func{f}{\seq{x}}{e_2}}} \; &\defeq \; \Func{f}{\seq{x}}{\subst{e_1}{x}{\paren{e_2}}} &\where{x \not\equiv f \text{かつ} x \notin \seq{x}} \\
+    \subst{e_1}{x}{\paren{P, \Func{f}{\seq{x}}{e_2}}} \; &\defeq \; \subst{e_1}{x}\paren{{P}}, \subst{e_1}{x}\paren{{\Func{f}{\seq{x}}{e_2}}} \\
+    \subst{e_1}{x_1}{x_2} \; &\defeq \; x_2 &\where{x_1 \not\equiv x_2} \\
+    \subst{e}{x}{x} \; &\defeq \; e \\
+    \subst{e}{x}{n} \; &\defeq \; n \\
+    \subst{e}{x}{\mathrm{op}} \; &\defeq \; \mathrm{op} \\
+    \subst{e}{x}{\paren{\App{v_1 \;}{v_2}}} \; &\defeq \; \App{\paren{\subst{e}{x}{v_1}}}{\paren{\subst{e}{x}{v_2}}} \\
+    \subst{e_1}{x}{\paren{\If{\; v \;}{\; e_2 \;}{\; e_3 \;}}} \; &\defeq \; \If{\; \subst{e_1}{x}{v} \;}{\; \subst{e_1}{x}{e_2} \;}{\; \subst{e_1}{x}{e_3}} \\
+    \subst{e_1}{x}{\paren{\Let{\; x}{e_2 \;}{\; e_3}}} \; &\defeq \; \Let{\; x}{\subst{e_1}{x}{e_2\; }}{\; e_3} \\
+    \subst{e_1}{x_1}{\paren{\Let{\; x_2}{e_2 \;}{\; e_3}}} \; &\defeq \; \Let{\; x_2}{\subst{e_1}{x_1}{e_2} \;}{\; \subst{e_1}{x_1}{e_3}} &\where{x_1 \not\equiv x_2} \\\\
+    \fv{\Func{f}{\seq{x}}{e}} \; &\defeq \; \fv{e} \setminus \paren{\brace{f} \cup \brace{\seq{x}}} \\
+    \fv{P, \Func{f}{\seq{x}}{e}} \; &\defeq \; \fv{P} \cup \fv{\Func{f}{\seq{x}}{e}} \\
+    \fv{x} \; &\defeq \l \brace{x} \\
+    \fv{n} \; &\defeq \; \emptyset \\
+    \fv{\mathrm{op}} \; &\defeq \; \emptyset \\
+    \fv{\App{v_1 \;}{v_2}} \; &\defeq \fv{v_1} \cup \fv{v_2} \\
+    \fv{\If{\; v \;}{\; e_1 \;}{\; e_2}} \; &\defeq \; \fv{v} \cup \fv{e_1} \cup \fv{e_2} \\
+    \fv{\Let{\; x}{e_1 \;}{\; e_2}} \; &\defeq \; \fv{e_1} \cup \paren{\fv{e_2} \setminus \brace{x}}
+  \end{align*}
+  \caption{補助関数}
+  \label{fig:lang:aux}
+\end{figure}
 
 \NOTE{
   将来的にタプルや代数的データ構造およびパターンマッチも導入予定だが，今のところは単純のため非関数の式は整数しかないような言語を考える．

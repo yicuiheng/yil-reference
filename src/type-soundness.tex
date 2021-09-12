@@ -12,7 +12,7 @@
 \begin{lemma}{代入補題}{subst}
   $\TyJudge{P}{\Gamma_1}{v}{\tau'}$ かつ
   $\TyJudge{P}{\Gamma_1, \typed{x}{\tau'}, \Gamma_2}{e}{\tau}$ ならば
-  $\TyJudge{P}{\Gamma_1, \subst{x}{v}{\Gamma_2}}{\subst{x}{v}{e}}{\subst{x}{v}{\tau}}$
+  $\TyJudge{P}{\Gamma_1, \subst{v}{x}{\Gamma_2}}{\subst{v}{x}{e}}{\subst{v}{x}{\tau}}$
 \end{lemma}
 \begin{proof}
   \TODO{証明を書く}
