@@ -3,26 +3,47 @@
 
 \begin{align*}
   & P \; \defeq \; \\
-  &\quad\quad \Func{\code{is\_even}}{x}{\If{x = 0}{\true}{\App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{x - 1}}}}}}, \\
-  &\quad\quad \Func{\code{is\_odd}}{x}{\If{x = 0}{\false}{\App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{x - 1}}}}}} \\\\
-  & \infer[\TyRuleApp] {
-    \TyJudge{P}{}{\App{\code{is\_even}}{2}}{\TyInt{\nu}{\nu = 0}}
+  &\quad\quad \Func{\code{is\_even}}{x}{\If{\; x = 0 \;}{\; \true \;}{\; \App{\mathrm{not}}{\paren{\App{\code{is\_odd}}{\paren{x - 1}}}}}}, \\
+  &\quad\quad \Func{\code{is\_odd}}{x}{\If{\; x = 0 \;}{\; \false \;}{\; \App{\mathrm{not}}{\paren{\App{\code{is\_even}}{\paren{x - 1}}}}}} \\
+  & \tau_\code{is\_even} \; \defeq \; \TyFunc{x}{\TyInt{\nu_x}{\nu_x \geq 0}}{\left\TyInt{\nu \; \middle}{\begin{array}{l}
+            \paren{\paren{\nu_x \% 2 = 0} \Rightarrow \nu = 0} \lor \\
+            \paren{\paren{\nu_x \% 2 \neq 0} \Rightarrow \nu = 1}
+  \end{array}\right}} \\\\
+  &\hspace{-6em} \infer[\TyRuleSub] {
+    \TyJudge{P}{}{\App{\code{is\_even}}{2}}{\TyInt{\nu \;}{\nu = 0}}
   } {
-    \infer[\TyRuleFunc] {
-      \TyJudge
-        {P}{\Gamma}
+    \infer[\TyRuleApp] {
+      \TyJudge{P}{}{\App{\code{is\_even}}{2}}{\left\TyInt{\nu \; \middle}{\begin{array}{l}
+        \paren{\paren{2 \% 2 = 0} \Rightarrow \nu = 0} \lor \\
+        \paren{\paren{2 \%2 \neq 0} \Rightarrow \nu = 1}
+      \end{array} \right}}
+    } {
+      \TyJudge{P}{}
         {\code{is\_even}}
-        {\TyFunc
-          {x}{\TyInt{\nu}{\nu \geq 0}}
-          {\TyInt{\nu'}{\begin{array}{l}
-            \paren{\paren{\nu \% 2 = 0} \Rightarrow \nu' = 0} \lor \\
-            \paren{\paren{\nu \% 2 \neq 0} \Rightarrow \nu' = 1}
-          \end{array}}}
+        {\tau_\code{is\_even}}
+      & \infer[\TyRuleSub] {
+        \TyJudge{P}{}{2}{\TyInt{\nu_x}{\nu_x \geq 0}}
+      } {
+        \TyJudge{P}{}{2}{\TyInt{\nu_x}{\nu_x = 2}}
+        & \infer[\SubTyRuleInt] {
+          \SubTyJudge{P}{}{\TyInt{\nu_x}{\nu_x = 2}}{\TyInt{\nu_x}{\nu_x \geq 0}}
+        } {
+          \models \nu_x = 2 \Rightarrow \nu_x \geq 0
         }
-    }{
-      \TODO{書く}
+      }
     }
-    & \TyJudge{P}{\Gamma}{2}{\TyInt{\nu}{\nu = 2}} \quad \TyRuleNum
+    & \hspace{-4em} \infer[\SubTyRuleInt] {
+      \SubTyJudge{P}{}{\left\TyInt{\nu \; \middle}{\begin{array}{l}
+        \paren{\paren{2 \% 2 = 0} \Rightarrow \nu = 0} \lor \\
+        \paren{\paren{2 \%2 \neq 0} \Rightarrow \nu = 1}
+      \end{array} \right}}{\TyInt{\nu \;}{\nu = 0}}
+    } {
+      \models \left\paren{\begin{array}{l}
+        \paren{\paren{2 \% 2 = 0} \Rightarrow \nu = 0} \lor \\
+        \paren{\paren{2 \%2 \neq 0} \Rightarrow \nu = 1}
+      \end{array}\right}
+      \Rightarrow \nu = 0
+    }
   }
 \end{align*}
 

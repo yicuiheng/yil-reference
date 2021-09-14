@@ -16,7 +16,7 @@
     } \quad\quad
     \TyJudge{P}{\Gamma}{n}{\TyInt{\nu}{\nu = n}} \quad \text{\TyRuleNum} \\\\
     \infer[\TyRuleApp] {
-      \TyJudge{P}{\Gamma}{\App{v_1}{v_2}}{\tau_2}
+      \TyJudge{P}{\Gamma}{\App{v_1}{v_2}}{\subst{v_2}{x}{\tau_2}}
     } {
       \TyJudge{P}{\Gamma}{v_1}{\TyFunc{x}{\tau_1}{\tau_2}}
       \quad \TyJudge{P}{\Gamma}{v_2}{\tau_1}
