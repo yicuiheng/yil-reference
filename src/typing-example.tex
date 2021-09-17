@@ -36,7 +36,8 @@
             \paren{\nu_x \neq 0} \Rightarrow \nu_\code{cond} = 1
   \end{array} \\
   & \tau_\code{cond} \; \defeq \; \TyInt{\nu_\code{cond} \;}{\phi_\code{cond}} \\
-  & \tau_\mathrm{if} \; \defeq \; \TODO{後で考える} \\\\
+  & \tau_\mathrm{if} \; \defeq \; \TyInt{\nu_\code{if} \;}{\TODO{書く}} \\
+  & \Gamma' \; \defeq \; \typed{x}{\TyInt{\nu_x \;}{\nu_x \geq 0}}, \typed{\code{cond}}{\tau_\code{cond}}, \phi_\code{cond} \land \nu_\code{cond} \neq 0, \typed{x'}{\TyInt{\nu_x'}{\nu_x' = \nu_x - 1}} \\\\
   &\hspace{-6em} \infer[\TyRuleSub] {
     \TyJudge{P}{}{\App{\code{is\_even}}{2}}{\TyInt{\nu \;}{\nu = 0}}
   } {
@@ -128,7 +129,7 @@
         \end{array}}
         {\true}
         {\tau_\mathrm{if}}
-    } { \TODO{書く} }
+    } { \mathrm{B} }
     \quad
     \infer {
       \TyJudge{P}
@@ -143,7 +144,7 @@
           \dots}}
         \end{array}}
         {\tau_\mathrm{if}}
-    } {\TODO{書く}}
+    } { \mathrm{C} }
   } \\\\
   & \mathrm{B} \colon \\
   & \infer {
@@ -159,21 +160,82 @@
     \TODO{書く}
   } \\\\
   & \mathrm{C} \colon \\
-  & \infer {
+  & \hspace{-6em} \infer[\TyRuleLet] {
     \TyJudge{P}
       {
         \typed{x}{\TyInt{\nu_x}{\nu_x \geq 0}},
         \typed{\code{cond}}{\tau_\code{cond}},
         \phi_\code{cond} \land \nu_\code{cond} \neq 0
       }
-      {\begin{array}{l}
-        \Let{\; x'}{x-1 \;}{\\
-        \Let{\; y}{\App{\code{is\_odd}}{x' \;}}{ \\
+      {
+        \Let{\; x'}{x-1 \;}{ \;
+        \Let{\; y}{\App{\code{is\_odd}}{x' \;}}{
         \dots}}
-      \end{array}}
+      }
       {\tau_\mathrm{if}}
   } {
-    \TODO{書く}
-  }
+    \infer[\TyRuleApp] {
+      \TyJudge{P}{\begin{array}{l}
+        \typed{x}{\TyInt{\nu_x}{\nu_x \geq 0}}, \\
+        \typed{\code{cond}}{\tau_\code{cond}}, \\
+        \phi_\code{cond} \land \nu_\code{cond} \neq 0
+      \end{array}}
+      {x - 1}
+      {\TyInt{\nu_x'}{\nu_x' = \nu_x - 1}}
+    } { \TODO{書く} }
+    \quad
+    \infer[\TyRuleLet] {
+      \TyJudge{P}
+        {\Gamma'}
+        {\begin{array}{l}
+          \Let{\; y}{\App{\code{is\_odd}}{x' \;}}{\\
+          \App{\mathrm{not}}{y}}
+        \end{array}}
+        {\TODO{書く}}
+    } {
+      \mathrm{D}
+      & \mathrm{E}
+    }
+  } \\\\
+  & \mathrm{D} \colon \\
+  & \infer[\TyRuleApp] {
+    \TyJudge{P}{\Gamma'}
+      {\App{\code{is\_odd}}{x'}}
+      {\left\TyInt
+        {\nu_y \; \middle}
+        {\begin{array}{l}
+            \paren{\paren{\nu_x' \% 2 = 0} \Rightarrow \nu_y = 1} \land \\
+            \paren{\paren{\nu_x' \% 2 \neq 0} \Rightarrow \nu_y = 0}
+        \end{array}\right}
+      }
+  } {
+    \TyJudge{P}{\Gamma'}{\code{is\_odd}}{\tau_\code{is\_odd}}
+    \quad
+    \infer[\TyRuleSub] {
+      \TyJudge{P}{\Gamma'}{x'}{\TyInt{\nu_x'}{\nu_x' \geq 0}}
+    } {
+      \infer[\TyRuleVar] {
+        \TyJudge{P}{\Gamma'}{x'}{\TyInt{\nu_x'}{\nu_x' = \nu_x - 1}}
+      } {
+        \Gamma'\paren{x'} = \TyInt{\nu_x'}{\nu_x' = \nu_x - 1}
+      }
+      \quad
+      \infer[\SubTyRuleInt] {
+        \SubTyJudge{P}{\Gamma'}{\TyInt{\nu_x'}{\nu_x' = \nu_x - 1}}{\TyInt{\nu_x'}{\nu_x' \geq 0}}
+      } {
+        \models \paren{\sem{\Gamma'} \land \nu_x' = \nu_x - 1} \Rightarrow \nu_x' \geq 0
+      }
+    }
+  } \\\\
+  & \mathrm{E} \colon \\
+  & \infer[\TyRuleApp] {
+    \TyJudge{P}{\Gamma, \typed{y}{\left\TyInt
+        {\nu_y \; \middle}
+        {\begin{array}{l}
+            \paren{\paren{\nu_x' \% 2 = 0} \Rightarrow \nu_y = 1} \land \\
+            \paren{\paren{\nu_x' \% 2 \neq 0} \Rightarrow \nu_y = 0}
+        \end{array}\right}
+      }}{\App{\mathrm{not}}{y}}{\TODO{書く}}
+  } {}
 \end{align*}
 
