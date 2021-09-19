@@ -238,3 +238,41 @@
   }
 \end{align*}
 
+\par つまり，以下の論理式の妥当性を判定できれば型付けできる．
+\begin{align*}
+  & \nu_x = 2 \Rightarrow \nu_x \geq 0 \\
+  & \left\paren{\begin{array}{l}
+    \paren{\paren{2 \% 2 = 0} \Rightarrow \nu = 0} \land \\
+    \paren{\paren{2 \% 2 \neq 0} \Rightarrow \nu = 1}
+  \end{array}\right} \Rightarrow \nu = 0 \\
+  & \left\paren{\left\sem{\begin{array}{l}
+    \typed{x}{\TyInt{\nu_x}{\nu_x \geq 0}}, \\
+    \typed{\code{cond}}{\tau_\code{cond}}, \\
+    \phi_\code{cond} \land \nu_\code{cond} = 0
+  \end{array}\right} \land \nu = 0 \right} \Rightarrow \left\paren{\begin{array}{l}
+    \paren{\paren{\nu_x - 1} \% 2 = 0} \Rightarrow \nu = 1 \land \\
+    \paren{\paren{\nu_x - 1} \% 2 \neq 0} \Rightarrow \nu = 0
+  \end{array}\right} \\
+  & \paren{\sem{\Gamma'} \land \nu_x' = \nu_x - 1} \Rightarrow \nu_x' \geq 0
+\end{align*}
+
+\par ここで $\sem{\Gamma'}$ などを展開すると
+\begin{align*}
+  & \left\paren{\begin{array}{l}
+    \nu_x \geq 0 \land \\
+    \paren{\paren{\nu_x = 0} \Rightarrow \nu_\code{cond} = 0} \land \\
+    \paren{\paren{\nu_x \neq 0} \Rightarrow \nu_\code{cond} = 1} \land \\
+    \nu_\code{cond} = 0 \land \\
+    \nu = 0
+  \end{array}\right} \Rightarrow \left\paren{\begin{array}{l}
+    \paren{\paren{\nu_x - 1} \% 2 = 0} \Rightarrow \nu = 1 \land \\
+    \paren{\paren{\nu_x - 1} \% 2 \neq 0} \Rightarrow \nu = 0
+  \end{array}\right} \\
+  & \left\paren{\begin{array}{l}
+    \nu_x \geq 0 \land \\
+    \nu_\code{cond} \neq 0 \land \\
+    \nu_x = 0 \Rightarrow \nu_\code{cond} = 0 \land \\
+    \nu_x \neq 0 \Rightarrow \nu_\code{cond} = 1 \land \\
+    \nu_x' = \nu_x - 1
+  \end{array}\right} \Rightarrow \nu_x' \geq 0
+\end{align*}
